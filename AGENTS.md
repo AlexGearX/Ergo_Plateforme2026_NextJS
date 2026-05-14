@@ -19,6 +19,7 @@ Changements clés de Next.js 16 à retenir :
 **Objectif :** remplacer une multitude de documents Excel / Word actuellement utilisés pour suivre le matériel d'ergothérapie.
 
 **Utilisateurs et droits :**
+
 - **L'ergothérapeute** — utilisatrice principale, **admin** : droits complets (CRUD), c'est elle qui crée les comptes des autres utilisateurs (pas d'auto-inscription).
 - **Autres soignants** — accès en **lecture seule** (visualisation, pas de modification).
 
@@ -39,6 +40,7 @@ Changements clés de Next.js 16 à retenir :
   - Rattachée à une personne (à confirmer à la modélisation).
 
 **Implications techniques à garder en tête :**
+
 - `materiel.piece_id` requis, `materiel.personne_id` nullable.
 - `piece.type` est un enum (ou table de référence) — la « chambre » n'est pas une entité séparée, c'est un type de pièce.
 - Le système de rôles (admin / lecteur) doit être pensé dès le début côté Supabase RLS.
@@ -80,7 +82,7 @@ src/
   proxy.ts                            # Proxy Next 16 — redirect locale + refresh session Supabase
 ```
 
-**Règle générale :** avant de placer un fichier dans un dossier global, se demander *est-ce qu'il est réellement réutilisé par 2 features ou plus ?* Si non, le garder colocalisé avec la feature.
+**Règle générale :** avant de placer un fichier dans un dossier global, se demander _est-ce qu'il est réellement réutilisé par 2 features ou plus ?_ Si non, le garder colocalisé avec la feature.
 
 # Conventions
 
@@ -93,7 +95,7 @@ src/
 ## Style de code
 
 - **Jamais de `any`** — utiliser `unknown` + narrowing (typeof, instanceof, parsing Zod, type guards).
-- **Pas de commentaires sauf si vraiment nécessaire** — le nommage doit porter le sens. Commentaire uniquement pour un *pourquoi* non-évident (workaround, invariant caché, contrainte externe).
+- **Pas de commentaires sauf si vraiment nécessaire** — le nommage doit porter le sens. Commentaire uniquement pour un _pourquoi_ non-évident (workaround, invariant caché, contrainte externe).
 
 ## Forms
 
@@ -103,7 +105,7 @@ src/
 
 ## Supabase
 
-- **Row Level Security activée partout, sans exception.** Toujours penser policies *avant* d'écrire une requête.
+- **Row Level Security activée partout, sans exception.** Toujours penser policies _avant_ d'écrire une requête.
 - Toute nouvelle table dans `supabase/migrations/` doit venir avec ses policies (même migration ou migration immédiatement suivante).
 - **Clients Supabase** :
   - Code navigateur (`'use client'`) → `import { createClient } from '@/lib/supabase/client'`

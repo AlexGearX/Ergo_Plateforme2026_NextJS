@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Lexend } from 'next/font/google'
 import { ClientProviders } from '@/components/layout/client-providers'
 import { defaultLocale } from '@/lib/i18n/config'
 import './globals.css'
@@ -14,6 +14,12 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const lexend = Lexend({
+  variable: '--font-lexend',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+})
+
 export const metadata: Metadata = {
   title: 'Ergo Les Charmes — Plateforme 2026',
   description: 'Plateforme Ergo Les Charmes',
@@ -25,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html className={`${geistSans.variable} ${geistMono.variable}`} lang={defaultLocale}>
+    <html className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable}`} lang={defaultLocale}>
       <body className="bg-background min-h-screen antialiased">
         <ClientProviders>{children}</ClientProviders>
       </body>
