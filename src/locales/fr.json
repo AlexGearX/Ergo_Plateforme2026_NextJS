@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "Ergo Les Charmes"
+  },
+  "nav": {
+    "home": "Accueil"
+  },
+  "auth": {
+    "signIn": "Connexion",
+    "signOut": "Déconnexion",
+    "email": "Adresse e-mail",
+    "continueWithGoogle": "Continuer avec Google",
+    "sendMagicLink": "Recevoir un lien de connexion",
+    "or": "OU",
+    "checkEmail": "Vérifie ta boîte mail pour finaliser la connexion."
+  },
+  "actions": {
+    "submit": "Valider",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour"
+  }
+}
