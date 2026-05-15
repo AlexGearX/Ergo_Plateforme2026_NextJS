@@ -2,35 +2,26 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Boxes, Clock, Compass, Users } from 'lucide-react'
+import { Boxes, Compass } from 'lucide-react'
 import { gsap } from 'gsap'
 import { AppHeader } from '@/components/layout/app-header'
 import { cn } from '@/lib/utils'
-
-type Maison = {
-  id: string
-  nom: string
-  slug: string
-  pieces: number
-  residents: number
-  prets: number
-  /** position du centre de la card, en % du container 1100x600 */
-  x: number
-  y: number
-}
+import type { MaisonWithPiecesCount } from '@/features/maisons/types'
 
 const VIEW_W = 1100
 const VIEW_H = 520
 
-const MAISONS: Maison[] = [
-  { id: 'm1', nom: 'Maison 1', slug: 'maison-1', pieces: 8, residents: 12, prets: 3, x: 130, y: 440 },
-  { id: 'm2', nom: 'Maison 2', slug: 'maison-2', pieces: 10, residents: 14, prets: 2, x: 186, y: 270 },
-  { id: 'm3', nom: 'Maison 3', slug: 'maison-3', pieces: 7, residents: 11, prets: 5, x: 340, y: 146 },
-  { id: 'm4', nom: 'Maison 4', slug: 'maison-4', pieces: 9, residents: 13, prets: 1, x: 550, y: 100 },
-  { id: 'm5', nom: 'Maison 5', slug: 'maison-5', pieces: 7, residents: 10, prets: 0, x: 760, y: 146 },
-  { id: 'm6', nom: 'Maison 6', slug: 'maison-6', pieces: 8, residents: 12, prets: 4, x: 914, y: 270 },
-  { id: 'm7', nom: 'Maison 7', slug: 'maison-7', pieces: 11, residents: 16, prets: 2, x: 970, y: 440 },
-]
+const LAYOUT: Record<string, { x: number; y: number }> = {
+  'maison-1': { x: 130, y: 440 },
+  'maison-2': { x: 186, y: 270 },
+  'maison-3': { x: 340, y: 146 },
+  'maison-4': { x: 550, y: 100 },
+  'maison-5': { x: 760, y: 146 },
+  'maison-6': { x: 914, y: 270 },
+  'maison-7': { x: 970, y: 440 },
+}
+
+type MaisonMarker = MaisonWithPiecesCount & { x: number; y: number }
 
 type Tree = { x: number; y: number; size: number; variant: 'leaf' | 'pine' | 'bush' }
 
@@ -59,15 +50,6 @@ const TREES: Tree[] = [
   { x: 760, y: 500, size: 9, variant: 'pine' },
 ]
 
-const TOTAL = MAISONS.reduce(
-  (acc, m) => ({
-    pieces: acc.pieces + m.pieces,
-    residents: acc.residents + m.residents,
-    prets: acc.prets + m.prets,
-  }),
-  { pieces: 0, residents: 0, prets: 0 },
-)
-
 function pctX(px: number) {
   return (px / VIEW_W) * 100
 }
@@ -75,15 +57,23 @@ function pctY(px: number) {
   return (px / VIEW_H) * 100
 }
 
-export function HomeClient() {
+type HomeClientProps = { maisons: MaisonWithPiecesCount[] }
+
+export function HomeClient({ maisons }: HomeClientProps) {
+  const markers: MaisonMarker[] = maisons.flatMap(m => {
+    const layout = LAYOUT[m.slug]
+    return layout ? [{ ...m, ...layout }] : []
+  })
+  const totalPieces = maisons.reduce((acc, m) => acc + m.piecesCount, 0)
+
   return (
     <div className="text-foreground relative isolate min-h-screen">
       <BackdropBotanic />
       <div className="relative z-10">
         <AppHeader />
         <main className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
-          <HeroIntro />
-          <SitePlan />
+          <HeroIntro maisonsCount={maisons.length} totalPieces={totalPieces} />
+          <SitePlan markers={markers} />
         </main>
       </div>
     </div>
@@ -242,7 +232,7 @@ function BotanicPath({ variant }: { variant: BotanicVariant }) {
   )
 }
 
-function HeroIntro() {
+function HeroIntro({ maisonsCount, totalPieces }: { maisonsCount: number; totalPieces: number }) {
   const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -283,12 +273,10 @@ function HeroIntro() {
 
       <dl
         data-anim="summary"
-        className="border-border/70 grid grid-cols-2 gap-x-8 gap-y-6 border-t pt-6 sm:grid-cols-4 lg:border-t-0 lg:pt-0"
+        className="border-border/70 grid grid-cols-2 gap-x-8 gap-y-6 border-t pt-6 sm:grid-cols-2 lg:border-t-0 lg:pt-0"
       >
-        <SummaryItem label="Maisons" value={MAISONS.length} />
-        <SummaryItem label="Pièces" value={TOTAL.pieces} />
-        <SummaryItem label="Résidents" value={TOTAL.residents} />
-        <SummaryItem label="À rendre" value={TOTAL.prets} accent />
+        <SummaryItem label="Maisons" value={maisonsCount} />
+        <SummaryItem label="Pièces" value={totalPieces} />
       </dl>
     </section>
   )
@@ -305,7 +293,7 @@ function SummaryItem({ label, value, accent }: { label: string; value: number; a
   )
 }
 
-function SitePlan() {
+function SitePlan({ markers }: { markers: MaisonMarker[] }) {
   const planRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -379,7 +367,7 @@ function SitePlan() {
         </svg>
 
         <div className="absolute inset-0">
-          {MAISONS.map(m => (
+          {markers.map(m => (
             <HouseMarker key={m.id} maison={m} />
           ))}
         </div>
@@ -388,7 +376,7 @@ function SitePlan() {
   )
 }
 
-function HouseMarker({ maison }: { maison: Maison }) {
+function HouseMarker({ maison }: { maison: MaisonMarker }) {
   return (
     <div
       data-anim="house"
@@ -413,26 +401,8 @@ function HouseMarker({ maison }: { maison: Maison }) {
           <h3 className="font-display text-foreground text-[14px] leading-tight font-semibold tracking-tight">
             {maison.nom}
           </h3>
-          <p className="text-muted-foreground mt-1 inline-flex items-center gap-2 text-[11px] tabular-nums">
-            <span className="inline-flex items-center gap-1">
-              <Boxes className="size-3" aria-hidden="true" /> {maison.pieces}
-            </span>
-            <span className="text-border" aria-hidden="true">
-              ·
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Users className="size-3" aria-hidden="true" /> {maison.residents}
-            </span>
-            {maison.prets > 0 && (
-              <>
-                <span className="text-border" aria-hidden="true">
-                  ·
-                </span>
-                <span className="text-warning-foreground dark:text-warning inline-flex items-center gap-1">
-                  <Clock className="size-3" aria-hidden="true" /> {maison.prets}
-                </span>
-              </>
-            )}
+          <p className="text-muted-foreground mt-1 inline-flex items-center gap-1 text-[11px] tabular-nums">
+            <Boxes className="size-3" aria-hidden="true" /> {maison.piecesCount}
           </p>
         </div>
       </Link>

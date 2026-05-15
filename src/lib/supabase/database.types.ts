@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      maisons: {
+        Row: {
+          created_at: string
+          id: string
+          nom: string
+          numero: number
+          position: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nom: string
+          numero: number
+          position: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nom?: string
+          numero?: number
+          position?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pieces: {
+        Row: {
+          created_at: string
+          id: string
+          maison_id: string
+          nom: string
+          position: number
+          type: Database["public"]["Enums"]["piece_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          maison_id: string
+          nom: string
+          position: number
+          type: Database["public"]["Enums"]["piece_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          maison_id?: string
+          nom?: string
+          position?: number
+          type?: Database["public"]["Enums"]["piece_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pieces_maison_id_fkey"
+            columns: ["maison_id"]
+            isOneToOne: false
+            referencedRelation: "maisons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +90,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      piece_type:
+        | "chambre"
+        | "salle_de_bain"
+        | "salle_de_vie"
+        | "cuisine"
+        | "autre"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +222,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      piece_type: [
+        "chambre",
+        "salle_de_bain",
+        "salle_de_vie",
+        "cuisine",
+        "autre",
+      ],
+    },
   },
 } as const

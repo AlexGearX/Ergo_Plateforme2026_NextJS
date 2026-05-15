@@ -9,9 +9,7 @@
     "signIn": "Connexion",
     "signOut": "Déconnexion",
     "email": "Adresse e-mail",
-    "continueWithGoogle": "Continuer avec Google",
     "sendMagicLink": "Recevoir un lien de connexion",
-    "or": "OU",
     "checkEmail": "Vérifie ta boîte mail pour finaliser la connexion."
   },
   "actions": {
@@ -21,5 +19,31 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "back": "Retour"
+  },
+  "maisons": {
+    "openMaison": "Ouvrir la maison",
+    "backToHome": "Retour au plan du site",
+    "notFound": "Maison introuvable.",
+    "stats": {
+      "pieces": "Pièces",
+      "chambres": "Chambres",
+      "sallesDeBain": "Salles de bain",
+      "sallesDeVie": "Salle de vie"
+    },
+    "pieceTypes": {
+      "chambre": "Chambre",
+      "chambres": "Chambres",
+      "salle_de_bain": "Salle de bain",
+      "salles_de_bain": "Salles de bain",
+      "salle_de_vie": "Salle de vie",
+      "salles_de_vie": "Salles de vie",
+      "cuisine": "Cuisine",
+      "cuisines": "Cuisines",
+      "autre": "Autre",
+      "autres": "Autres"
+    },
+    "empty": {
+      "materiel": "Aucun matériel attribué pour l’instant."
+    }
   }
 }

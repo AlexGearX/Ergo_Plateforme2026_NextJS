@@ -1,14 +1,11 @@
-/**
- * Application routes
- * Centralized route definitions to avoid hardcoded strings throughout the app
- */
-
 export const ROUTES = {
   HOME: '/',
+  SIGN_IN: '/auth/connexion',
+  AUTH_CALLBACK: '/auth/callback',
 } as const
 
-/**
- * Public routes - accessible without authentication
- * Used by middleware to determine which routes don't require auth
- */
-export const PUBLIC_ROUTES: string[] = [ROUTES.HOME]
+export const PUBLIC_ROUTES: readonly string[] = [ROUTES.SIGN_IN, ROUTES.AUTH_CALLBACK]
+
+export function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(p => pathname === p || pathname.startsWith(`${p}/`))
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ChevronDown, LogOut, Moon, Search, Settings2, Sun, UserCircle2 } from 'lucide-react'
 import { gsap } from 'gsap'
 import { Button } from '@/components/ui/button'
@@ -15,12 +16,14 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/auth'
+import { useLocale } from '@/lib/i18n'
+import { ROUTES } from '@/lib/routes'
 
 type NavItem = { href: string; label: string; active?: boolean }
 
 const NAV: NavItem[] = [
   { href: '/', label: 'Vue d’ensemble', active: true },
-  { href: '/maisons', label: 'Maisons' },
   { href: '/materiel', label: 'Matériel' },
   { href: '/personnes', label: 'Personnes' },
   { href: '/aides-repas', label: 'Aides au repas' },
@@ -36,8 +39,19 @@ function useTheme() {
 
 export function AppHeader() {
   const { dark, toggle } = useTheme()
+  const { user, signOut } = useAuth()
+  const { t } = useLocale()
+  const router = useRouter()
   const headerRef = useRef<HTMLElement | null>(null)
   const searchRef = useRef<HTMLDivElement | null>(null)
+
+  const displayName = user?.displayName ?? user?.email ?? '—'
+  const subtitle = user?.email && user?.displayName ? user.email : 'Ergothérapeute'
+
+  async function handleSignOut() {
+    await signOut()
+    router.replace(ROUTES.SIGN_IN)
+  }
 
   useEffect(() => {
     if (!headerRef.current) return
@@ -133,16 +147,16 @@ export function AppHeader() {
                   <UserCircle2 className="size-5" aria-hidden="true" />
                 </span>
                 <span className="hidden text-left leading-tight md:block">
-                  <span className="block text-sm font-medium">Marion Imbaud</span>
-                  <span className="text-muted-foreground block text-xs">Ergothérapeute</span>
+                  <span className="block max-w-[160px] truncate text-sm font-medium">{displayName}</span>
+                  <span className="text-muted-foreground block max-w-[160px] truncate text-xs">{subtitle}</span>
                 </span>
                 <ChevronDown className="text-muted-foreground size-4" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="flex items-center justify-between gap-2">
-                <span>Marion Imbaud</span>
-                <span className="border-border bg-muted text-muted-foreground rounded-full border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                <span className="truncate">{displayName}</span>
+                <span className="border-border bg-muted text-muted-foreground shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
                   Admin
                 </span>
               </DropdownMenuLabel>
@@ -151,9 +165,9 @@ export function AppHeader() {
                 <Settings2 aria-hidden="true" />
                 Paramètres
               </DropdownMenuItem>
-              <DropdownMenuItem variant="destructive">
+              <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
                 <LogOut aria-hidden="true" />
-                Se déconnecter
+                {t.auth.signOut}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
