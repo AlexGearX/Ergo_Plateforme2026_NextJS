@@ -82,8 +82,7 @@ export function AppHeader() {
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">
           <Logomark />
           <div className="font-display leading-tight">
-            <div className="text-[15px] font-semibold tracking-tight">Ergo Les Charmes</div>
-            <div className="text-muted-foreground -mt-0.5 text-[11px] tracking-wide uppercase">ADAPEI 63</div>
+            <div className="text-[15px] font-semibold tracking-tight">Ergo</div>
           </div>
         </Link>
 

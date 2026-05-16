@@ -44,6 +44,14 @@
     },
     "empty": {
       "materiel": "Aucun matériel attribué pour l’instant."
+    },
+    "detail": {
+      "numero": "Maison nº",
+      "intro": "Le carnet d’une maison : ses pièces, leurs occupants, et bientôt le matériel d’ergothérapie attribué.",
+      "plan": "Plan de la maison",
+      "planLead": "Une pastille par pièce, regroupée par usage.",
+      "position": "Pièce nº",
+      "materielSoon": "Matériel à venir"
     }
   }
 }
