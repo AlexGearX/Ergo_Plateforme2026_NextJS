@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Lexend } from 'next/font/google'
+import '@/lib/zod-setup'
 import { ClientProviders } from '@/components/layout/client-providers'
 import { defaultLocale } from '@/lib/i18n/config'
 import './globals.css'

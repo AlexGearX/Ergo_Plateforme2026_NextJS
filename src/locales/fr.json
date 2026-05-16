@@ -3,7 +3,9 @@
     "name": "Ergo Les Charmes"
   },
   "nav": {
-    "home": "Accueil"
+    "home": "Accueil",
+    "materiels": "Matériels",
+    "personnes": "Personnes"
   },
   "auth": {
     "signIn": "Connexion",
@@ -18,7 +20,9 @@
     "save": "Enregistrer",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "back": "Retour"
+    "back": "Retour",
+    "create": "Créer",
+    "add": "Ajouter"
   },
   "maisons": {
     "openMaison": "Ouvrir la maison",
@@ -53,5 +57,84 @@
       "position": "Pièce nº",
       "materielSoon": "Matériel à venir"
     }
+  },
+  "personnes": {
+    "title": "Personnes",
+    "new": "Nouvelle personne",
+    "edit": "Modifier la personne",
+    "notFound": "Personne introuvable.",
+    "empty": "Aucune personne enregistrée.",
+    "fields": {
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "lien": "Lien Google Drive",
+      "piece": "Pièce de rattachement"
+    },
+    "confirmDelete": "Supprimer cette personne ?"
+  },
+  "materiels": {
+    "title": "Matériels",
+    "new": "Nouveau matériel",
+    "edit": "Modifier le matériel",
+    "notFound": "Matériel introuvable.",
+    "empty": "Aucun matériel enregistré.",
+    "types": {
+      "materiel_transfert": "Matériel de transfert",
+      "brancard_douche": "Brancard douche",
+      "baignoire": "Baignoire",
+      "lit": "Lit",
+      "matelas": "Matelas",
+      "fauteuil_roulant": "Fauteuil roulant",
+      "chaise_douche": "Chaise de douche",
+      "wc": "WC"
+    },
+    "fields": {
+      "type": "Type",
+      "nom": "Nom",
+      "modele": "Modèle",
+      "reference": "Référence",
+      "numero_serie": "Numéro de série",
+      "date_achat": "Date d’achat",
+      "numero_mas": "Numéro MAS",
+      "duree_vie_annees": "Durée de vie (années)",
+      "commentaire": "Commentaire",
+      "piece": "Pièce",
+      "personne": "Personne",
+      "date_pret": "Date de prêt",
+      "date_retour_prevue": "Date de retour prévue"
+    },
+    "fauteuil": {
+      "section": "Spécificités fauteuil roulant",
+      "prestataire": "Prestataire",
+      "appartenance": "Appartenance",
+      "accessoires": "Accessoires",
+      "taille": "Taille",
+      "type_fauteuil": "Type de fauteuil"
+    },
+    "corsetSiege": {
+      "section": "Corset siège",
+      "orthoprothesiste": "Orthoprothésiste",
+      "type": "Type",
+      "commentaires": "Commentaires",
+      "date_livraison": "Date de livraison",
+      "annee_renouvellement": "Année de renouvellement"
+    },
+    "entretiens": {
+      "section": "Historique d’entretien",
+      "empty": "Aucun entretien enregistré.",
+      "add": "Ajouter un entretien",
+      "date": "Date",
+      "commentaires": "Commentaires",
+      "par_qui": "Par qui",
+      "prix": "Prix"
+    },
+    "filters": {
+      "all": "Tous",
+      "byType": "Filtrer par type",
+      "byMaison": "Filtrer par maison",
+      "byPiece": "Filtrer par pièce",
+      "byPersonne": "Filtrer par personne"
+    },
+    "confirmDelete": "Supprimer ce matériel et tout son historique ?"
   }
 }

@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      corsets_sieges: {
+        Row: {
+          annee_renouvellement: number | null
+          commentaires: string | null
+          created_at: string
+          date_livraison: string | null
+          materiel_id: string
+          orthoprothesiste: string | null
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          annee_renouvellement?: number | null
+          commentaires?: string | null
+          created_at?: string
+          date_livraison?: string | null
+          materiel_id: string
+          orthoprothesiste?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          annee_renouvellement?: number | null
+          commentaires?: string | null
+          created_at?: string
+          date_livraison?: string | null
+          materiel_id?: string
+          orthoprothesiste?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corsets_sieges_materiel_id_fkey"
+            columns: ["materiel_id"]
+            isOneToOne: true
+            referencedRelation: "materiels_fauteuil_roulant"
+            referencedColumns: ["materiel_id"]
+          },
+        ]
+      }
       maisons: {
         Row: {
           created_at: string
@@ -43,6 +84,195 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      materiels: {
+        Row: {
+          commentaire: string | null
+          created_at: string
+          date_achat: string | null
+          date_pret: string | null
+          date_retour_prevue: string | null
+          duree_vie_annees: number | null
+          id: string
+          modele: string
+          nom: string | null
+          numero_mas: string | null
+          numero_serie: string | null
+          personne_id: string | null
+          piece_id: string
+          reference: string | null
+          type: Database["public"]["Enums"]["materiel_type"]
+          updated_at: string
+        }
+        Insert: {
+          commentaire?: string | null
+          created_at?: string
+          date_achat?: string | null
+          date_pret?: string | null
+          date_retour_prevue?: string | null
+          duree_vie_annees?: number | null
+          id?: string
+          modele: string
+          nom?: string | null
+          numero_mas?: string | null
+          numero_serie?: string | null
+          personne_id?: string | null
+          piece_id: string
+          reference?: string | null
+          type: Database["public"]["Enums"]["materiel_type"]
+          updated_at?: string
+        }
+        Update: {
+          commentaire?: string | null
+          created_at?: string
+          date_achat?: string | null
+          date_pret?: string | null
+          date_retour_prevue?: string | null
+          duree_vie_annees?: number | null
+          id?: string
+          modele?: string
+          nom?: string | null
+          numero_mas?: string | null
+          numero_serie?: string | null
+          personne_id?: string | null
+          piece_id?: string
+          reference?: string | null
+          type?: Database["public"]["Enums"]["materiel_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiels_personne_id_fkey"
+            columns: ["personne_id"]
+            isOneToOne: false
+            referencedRelation: "personnes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiels_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materiels_entretiens: {
+        Row: {
+          commentaires: string | null
+          created_at: string
+          date: string
+          id: string
+          materiel_id: string
+          par_qui: string | null
+          prix_centimes: number | null
+        }
+        Insert: {
+          commentaires?: string | null
+          created_at?: string
+          date: string
+          id?: string
+          materiel_id: string
+          par_qui?: string | null
+          prix_centimes?: number | null
+        }
+        Update: {
+          commentaires?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          materiel_id?: string
+          par_qui?: string | null
+          prix_centimes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiels_entretiens_materiel_id_fkey"
+            columns: ["materiel_id"]
+            isOneToOne: false
+            referencedRelation: "materiels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materiels_fauteuil_roulant: {
+        Row: {
+          accessoires: string | null
+          appartenance: string | null
+          created_at: string
+          materiel_id: string
+          prestataire: string | null
+          taille: string | null
+          type_fauteuil: string | null
+          updated_at: string
+        }
+        Insert: {
+          accessoires?: string | null
+          appartenance?: string | null
+          created_at?: string
+          materiel_id: string
+          prestataire?: string | null
+          taille?: string | null
+          type_fauteuil?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accessoires?: string | null
+          appartenance?: string | null
+          created_at?: string
+          materiel_id?: string
+          prestataire?: string | null
+          taille?: string | null
+          type_fauteuil?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiels_fauteuil_roulant_materiel_id_fkey"
+            columns: ["materiel_id"]
+            isOneToOne: true
+            referencedRelation: "materiels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      personnes: {
+        Row: {
+          created_at: string
+          id: string
+          lien: string | null
+          nom: string
+          piece_id: string | null
+          prenom: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lien?: string | null
+          nom: string
+          piece_id?: string | null
+          prenom: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lien?: string | null
+          nom?: string
+          piece_id?: string | null
+          prenom?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personnes_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pieces: {
         Row: {
@@ -90,6 +320,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      materiel_type:
+        | "materiel_transfert"
+        | "brancard_douche"
+        | "baignoire"
+        | "lit"
+        | "matelas"
+        | "fauteuil_roulant"
+        | "chaise_douche"
+        | "wc"
       piece_type:
         | "chambre"
         | "salle_de_bain"
@@ -223,6 +462,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      materiel_type: [
+        "materiel_transfert",
+        "brancard_douche",
+        "baignoire",
+        "lit",
+        "matelas",
+        "fauteuil_roulant",
+        "chaise_douche",
+        "wc",
+      ],
       piece_type: [
         "chambre",
         "salle_de_bain",

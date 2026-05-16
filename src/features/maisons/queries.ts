@@ -1,6 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import type { MaisonWithPieces, MaisonWithPiecesCount } from '@/features/maisons/types'
 
+export type MaisonWithSimplePieces = {
+  id: string
+  nom: string
+  numero: number
+  pieces: { id: string; nom: string; type: string; position: number }[]
+}
+
 export async function getMaisonsWithPiecesCount(): Promise<MaisonWithPiecesCount[]> {
   const supabase = await createClient()
   if (!supabase) {
@@ -47,4 +54,23 @@ export async function getMaisonBySlug(slug: string): Promise<MaisonWithPieces | 
 
   const { pieces, ...maison } = data
   return { ...maison, pieces: pieces ?? [] }
+}
+
+export async function getAllMaisonsWithPieces(): Promise<MaisonWithSimplePieces[]> {
+  const supabase = await createClient()
+  if (!supabase) return []
+
+  const { data, error } = await supabase
+    .from('maisons')
+    .select('id, nom, numero, pieces(id, nom, type, position)')
+    .order('position', { ascending: true })
+
+  if (error) {
+    console.error('[maisons] getAllMaisonsWithPieces failed:', error)
+    return []
+  }
+  return (data ?? []).map(m => ({
+    ...m,
+    pieces: (m.pieces ?? []).sort((a, b) => a.position - b.position),
+  }))
 }

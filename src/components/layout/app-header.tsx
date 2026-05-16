@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ChevronDown, LogOut, Moon, Search, Settings2, Sun, UserCircle2 } from 'lucide-react'
 import { gsap } from 'gsap'
 import { Button } from '@/components/ui/button'
@@ -20,14 +20,19 @@ import { useAuth } from '@/lib/auth'
 import { useLocale } from '@/lib/i18n'
 import { ROUTES } from '@/lib/routes'
 
-type NavItem = { href: string; label: string; active?: boolean }
+type NavItem = { href: string; label: string }
 
 const NAV: NavItem[] = [
-  { href: '/', label: 'Vue d’ensemble', active: true },
-  { href: '/materiel', label: 'Matériel' },
+  { href: '/', label: 'Vue d’ensemble' },
+  { href: '/materiels', label: 'Matériels' },
   { href: '/personnes', label: 'Personnes' },
   { href: '/aides-repas', label: 'Aides au repas' },
 ]
+
+function isNavActive(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
 
 function useTheme() {
   const [dark, setDark] = useState(false)
@@ -42,6 +47,7 @@ export function AppHeader() {
   const { user, signOut } = useAuth()
   const { t } = useLocale()
   const router = useRouter()
+  const pathname = usePathname()
   const headerRef = useRef<HTMLElement | null>(null)
   const searchRef = useRef<HTMLDivElement | null>(null)
 
@@ -88,22 +94,25 @@ export function AppHeader() {
 
         <nav aria-label="Navigation principale" className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {NAV.map(item => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={item.active ? 'page' : undefined}
-                  className={cn(
-                    'inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition-colors',
-                    item.active
-                      ? 'text-foreground bg-accent/60'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/60',
-                  )}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {NAV.map(item => {
+              const active = isNavActive(pathname, item.href)
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition-colors',
+                      active
+                        ? 'text-foreground bg-accent/60'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/60',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </nav>
 
