@@ -111,12 +111,6 @@ function HeroIntro({
   return (
     <section ref={ref} className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-end">
       <div>
-        <p
-          data-anim="eyebrow"
-          className="text-accent-foreground/85 inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.18em] uppercase"
-        >
-          <Compass className="size-3.5" aria-hidden="true" />
-        </p>
         <h1
           data-anim="title"
           className="font-display mt-4 text-balance text-4xl leading-[1.05] font-medium tracking-[-0.02em] sm:text-5xl lg:text-[56px]"
