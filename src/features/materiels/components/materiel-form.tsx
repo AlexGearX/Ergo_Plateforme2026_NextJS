@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useForm, useWatch, type Control, type FieldPath, type FieldValues } from 'react-hook-form'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { toast } from 'sonner'
+import { AlertCircle, Armchair, FileText, MapPin, ScanLine } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
 import { PieceSelect } from '@/features/maisons/components/piece-select'
 import { PersonneSelect } from '@/features/personnes/components/personne-select'
 import { MATERIEL_TYPES, MATERIEL_TYPE_LABELS } from '@/features/materiels/constants'
@@ -94,15 +94,26 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <section className="space-y-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="border-border/60 bg-card/60 overflow-hidden rounded-3xl border shadow-[0_30px_60px_-40px_rgba(0,0,0,0.25)]"
+      >
+        <FormChapter
+          n={1}
+          icon={<ScanLine className="size-5" aria-hidden="true" />}
+          eyebrow="Chapitre I"
+          title="Identification"
+          intro="Type de matériel, modèle et références internes."
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>
+                    Type<span className="text-destructive ml-0.5">*</span>
+                  </FormLabel>
                   <Select value={field.value ?? ''} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">
@@ -125,20 +136,14 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <TextField control={form.control} name="nom" label="Nom (optionnel)" />
+            <TextField control={form.control} name="nom" label="Nom" placeholder="Optionnel" />
             <TextField control={form.control} name="reference" label="Référence" />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <TextField control={form.control} name="numero_serie" label="Numéro de série" />
-            <TextField control={form.control} name="numero_mas" label="Numéro MAS" />
-            <TextField
-              control={form.control}
-              name="duree_vie_annees"
-              label="Durée de vie (années)"
-              type="number"
-              min={1}
-            />
+            <TextField control={form.control} name="numero_serie" label="N° de série" />
+            <TextField control={form.control} name="numero_mas" label="N° MAS" />
+            <TextField control={form.control} name="duree_vie_annees" label="Durée de vie (an)" type="number" min={1} />
           </div>
 
           <TextField control={form.control} name="date_achat" label="Date d’achat" type="date" />
@@ -151,7 +156,8 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
                 <FormLabel>Commentaire</FormLabel>
                 <FormControl>
                   <textarea
-                    className="border-input bg-background focus-visible:ring-ring/50 min-h-[80px] w-full rounded-md border px-3 py-2 text-sm shadow-xs focus-visible:ring-[3px] focus-visible:outline-none"
+                    className="border-input bg-background focus-visible:ring-ring/50 min-h-[96px] w-full rounded-md border px-3 py-2 text-sm shadow-xs focus-visible:ring-[3px] focus-visible:outline-none"
+                    placeholder="Notes utiles : usage, contraintes, observations…"
                     value={field.value ?? ''}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
@@ -163,19 +169,24 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
               </FormItem>
             )}
           />
-        </section>
+        </FormChapter>
 
-        <Separator />
-
-        <section className="space-y-5">
-          <h3 className="text-sm font-semibold tracking-tight">Affectation</h3>
+        <FormChapter
+          n={2}
+          icon={<MapPin className="size-5" aria-hidden="true" />}
+          eyebrow="Chapitre II"
+          title="Affectation"
+          intro="À quelle pièce — et éventuellement à quelle personne — ce matériel est attribué."
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="piece_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pièce</FormLabel>
+                  <FormLabel>
+                    Pièce<span className="text-destructive ml-0.5">*</span>
+                  </FormLabel>
                   <FormControl>
                     <PieceSelect
                       value={field.value || null}
@@ -193,7 +204,9 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
               name="personne_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Personne (optionnel)</FormLabel>
+                  <FormLabel>
+                    Personne <span className="text-muted-foreground font-normal">(optionnel)</span>
+                  </FormLabel>
                   <FormControl>
                     <PersonneSelect value={field.value} onChange={field.onChange} personnes={personnes} />
                   </FormControl>
@@ -205,29 +218,37 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField control={form.control} name="date_pret" label="Date de prêt" type="date" />
-            <TextField control={form.control} name="date_retour_prevue" label="Date de retour prévue" type="date" />
+            <TextField control={form.control} name="date_retour_prevue" label="Retour prévu" type="date" />
           </div>
-        </section>
+        </FormChapter>
 
         {isFauteuil && (
           <>
-            <Separator />
-            <section className="space-y-5">
-              <h3 className="text-sm font-semibold tracking-tight">Spécificités fauteuil roulant</h3>
+            <FormChapter
+              n={3}
+              icon={<Armchair className="size-5" aria-hidden="true" />}
+              eyebrow="Chapitre III"
+              title="Fauteuil roulant"
+              intro="Caractéristiques propres au fauteuil."
+              tone="accent"
+            >
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextField control={form.control} name="fauteuil.prestataire" label="Prestataire" />
                 <TextField control={form.control} name="fauteuil.appartenance" label="Appartenance" />
                 <TextField control={form.control} name="fauteuil.taille" label="Taille" />
-                <TextField control={form.control} name="fauteuil.type_fauteuil" label="Type de fauteuil" />
+                <TextField control={form.control} name="fauteuil.type_fauteuil" label="Type" />
               </div>
               <TextField control={form.control} name="fauteuil.accessoires" label="Accessoires" />
-            </section>
+            </FormChapter>
 
-            <Separator />
-            <section className="space-y-5">
-              <h3 className="text-sm font-semibold tracking-tight">
-                Corset siège <span className="text-muted-foreground font-normal">(laisser vide si aucun)</span>
-              </h3>
+            <FormChapter
+              n={4}
+              icon={<FileText className="size-5" aria-hidden="true" />}
+              eyebrow="Chapitre IV"
+              title="Corset siège"
+              intro="À renseigner si un corset accompagne le fauteuil — laissez vide sinon."
+              tone="accent"
+            >
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextField control={form.control} name="corset_siege.orthoprothesiste" label="Orthoprothésiste" />
                 <TextField control={form.control} name="corset_siege.type" label="Type" />
@@ -266,26 +287,96 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
                   </FormItem>
                 )}
               />
-            </section>
+            </FormChapter>
           </>
         )}
 
         {serverError && (
-          <Alert variant="destructive">
-            <AlertDescription>{serverError}</AlertDescription>
-          </Alert>
+          <div className="px-6 pt-2 sm:px-10">
+            <Alert variant="destructive">
+              <AlertCircle className="size-4" />
+              <AlertDescription>{serverError}</AlertDescription>
+            </Alert>
+          </div>
         )}
 
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="ghost" onClick={() => router.back()}>
-            Annuler
-          </Button>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {mode === 'create' ? 'Créer' : 'Enregistrer'}
-          </Button>
-        </div>
+        <FormFooter
+          submitting={form.formState.isSubmitting}
+          submitLabel={mode === 'create' ? 'Créer le matériel' : 'Enregistrer'}
+          onCancel={() => router.back()}
+        />
       </form>
     </Form>
+  )
+}
+
+function FormChapter({
+  n,
+  icon,
+  eyebrow,
+  title,
+  intro,
+  tone = 'default',
+  children,
+}: {
+  n: number
+  icon: React.ReactNode
+  eyebrow: string
+  title: string
+  intro: string
+  tone?: 'default' | 'accent'
+  children: React.ReactNode
+}) {
+  return (
+    <section
+      className={
+        tone === 'accent'
+          ? 'border-border/50 border-t bg-[color-mix(in_oklab,var(--accent)_60%,transparent)]/30'
+          : 'border-border/50 border-t first:border-t-0'
+      }
+    >
+      <div className="grid gap-8 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[260px_1fr] lg:gap-12">
+        <header className="lg:sticky lg:top-24 lg:self-start">
+          <div className="flex items-center gap-3">
+            <span className="font-display border-border bg-background text-accent-foreground grid size-10 place-items-center rounded-xl border text-[14px] font-semibold tabular-nums shadow-sm">
+              {String(n).padStart(2, '0')}
+            </span>
+            <span className="text-accent-foreground/80">{icon}</span>
+          </div>
+          <p className="text-muted-foreground mt-4 text-[10px] tracking-[0.2em] uppercase">{eyebrow}</p>
+          <h2 className="font-display mt-1 text-xl leading-tight font-semibold tracking-tight">{title}</h2>
+          <p className="text-muted-foreground mt-2 text-[13px] leading-relaxed">{intro}</p>
+        </header>
+
+        <div className="space-y-5">{children}</div>
+      </div>
+    </section>
+  )
+}
+
+function FormFooter({
+  submitting,
+  submitLabel,
+  onCancel,
+}: {
+  submitting: boolean
+  submitLabel: string
+  onCancel: () => void
+}) {
+  return (
+    <div className="border-border/50 bg-background/70 flex flex-wrap items-center justify-between gap-3 border-t px-6 py-5 sm:px-10">
+      <p className="text-muted-foreground text-[11px] tracking-[0.18em] uppercase">
+        Les champs marqués <span className="text-destructive">*</span> sont obligatoires
+      </p>
+      <div className="flex items-center gap-2">
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Annuler
+        </Button>
+        <Button type="submit" disabled={submitting} className="rounded-full px-5">
+          {submitLabel}
+        </Button>
+      </div>
+    </div>
   )
 }
 
