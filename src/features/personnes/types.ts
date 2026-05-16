@@ -7,3 +7,12 @@ export type PersonneUpdate = Database['public']['Tables']['personnes']['Update']
 export type PersonneWithPiece = Personne & {
   piece: { id: string; nom: string; maison_id: string } | null
 }
+
+export type PersonneWithLocation = Personne & {
+  piece: {
+    id: string
+    nom: string
+    type: string
+    maison: { id: string; nom: string; numero: number; slug: string } | null
+  } | null
+}

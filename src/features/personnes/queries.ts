@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import type { Personne, PersonneWithPiece } from '@/features/personnes/types'
+import type { Personne, PersonneWithLocation, PersonneWithPiece } from '@/features/personnes/types'
 
 export async function listPersonnes(): Promise<PersonneWithPiece[]> {
   const supabase = await createClient()
@@ -36,6 +36,25 @@ export async function getPersonneById(id: string): Promise<PersonneWithPiece | n
     return null
   }
   return (data ?? null) as PersonneWithPiece | null
+}
+
+export async function getPersonneWithLocationById(id: string): Promise<PersonneWithLocation | null> {
+  const supabase = await createClient()
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('personnes')
+    .select(
+      'id, nom, prenom, type, lien, piece_id, created_at, updated_at, piece:pieces(id, nom, type, maison:maisons(id, nom, numero, slug))',
+    )
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    console.error('[personnes] getPersonneWithLocationById failed:', error)
+    return null
+  }
+  return (data ?? null) as unknown as PersonneWithLocation | null
 }
 
 export async function listPersonnesForSelect(): Promise<Pick<Personne, 'id' | 'nom' | 'prenom'>[]> {
