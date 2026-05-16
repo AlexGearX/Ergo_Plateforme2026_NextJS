@@ -63,6 +63,7 @@ export type Database = {
           numero: number
           position: number
           slug: string
+          type: Database["public"]["Enums"]["maison_type"]
           updated_at: string
         }
         Insert: {
@@ -72,6 +73,7 @@ export type Database = {
           numero: number
           position: number
           slug: string
+          type?: Database["public"]["Enums"]["maison_type"]
           updated_at?: string
         }
         Update: {
@@ -81,6 +83,7 @@ export type Database = {
           numero?: number
           position?: number
           slug?: string
+          type?: Database["public"]["Enums"]["maison_type"]
           updated_at?: string
         }
         Relationships: []
@@ -323,6 +326,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      maison_type: "habitation" | "stockage"
       materiel_type:
         | "materiel_transfert"
         | "brancard_douche"
@@ -466,6 +470,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      maison_type: ["habitation", "stockage"],
       materiel_type: [
         "materiel_transfert",
         "brancard_douche",

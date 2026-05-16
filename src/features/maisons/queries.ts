@@ -1,10 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
-import type { MaisonWithPieces, MaisonWithPiecesCount } from '@/features/maisons/types'
+import type { MaisonType, MaisonWithPieces, MaisonWithPiecesCount } from '@/features/maisons/types'
 
 export type MaisonWithSimplePieces = {
   id: string
   nom: string
   numero: number
+  type: MaisonType
   pieces: { id: string; nom: string; type: string; position: number }[]
 }
 
@@ -17,7 +18,7 @@ export async function getMaisonsWithPiecesCount(): Promise<MaisonWithPiecesCount
 
   const { data, error } = await supabase
     .from('maisons')
-    .select('id, numero, nom, slug, position, created_at, updated_at, pieces(count)')
+    .select('id, numero, nom, slug, position, type, created_at, updated_at, pieces(count)')
     .order('position', { ascending: true })
 
   if (error) {
@@ -42,7 +43,7 @@ export async function getMaisonBySlug(slug: string): Promise<MaisonWithPieces | 
 
   const { data, error } = await supabase
     .from('maisons')
-    .select('id, numero, nom, slug, position, created_at, updated_at, pieces(*)')
+    .select('id, numero, nom, slug, position, type, created_at, updated_at, pieces(*)')
     .eq('slug', slug)
     .maybeSingle()
 
@@ -62,7 +63,7 @@ export async function getAllMaisonsWithPieces(): Promise<MaisonWithSimplePieces[
 
   const { data, error } = await supabase
     .from('maisons')
-    .select('id, nom, numero, pieces(id, nom, type, position)')
+    .select('id, nom, numero, type, pieces(id, nom, type, position)')
     .order('position', { ascending: true })
 
   if (error) {

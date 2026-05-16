@@ -55,7 +55,13 @@
       "plan": "Plan de la maison",
       "planLead": "Une pastille par pièce, regroupée par usage.",
       "position": "Pièce nº",
-      "materielSoon": "Matériel à venir"
+      "materielSoon": "Matériel à venir",
+      "stockageEyebrow": "Local de stockage",
+      "stockageIntro": "La réserve centrale : matériel d’ergothérapie en attente d’attribution, organisé par zone.",
+      "stockagePlan": "Plan du local",
+      "stockagePlanLead": "Une pastille par zone de rangement.",
+      "stockageZones": "Zones de stockage",
+      "stockageZone": "Zone nº"
     }
   },
   "personnes": {
