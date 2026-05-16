@@ -6,17 +6,12 @@ import { useRouter } from 'next/navigation'
 import {
   Accessibility,
   ArrowLeft,
-  ArrowLeftRight,
   ArrowUpRight,
-  Bath,
-  Bed,
   BedDouble,
   CalendarRange,
-  Droplet,
   ExternalLink,
   HomeIcon,
   PencilLine,
-  ShowerHead,
   Trash2,
   UserCircle2,
   Wind,
@@ -41,6 +36,7 @@ import { deletePersonne } from '@/features/personnes/actions'
 import { PERSONNE_TYPE_LABELS } from '@/features/personnes/constants'
 import type { PersonneWithLocation } from '@/features/personnes/types'
 import { MATERIEL_TYPE_LABELS, type MaterielType } from '@/features/materiels/constants'
+import { MaterielTypeIcon } from '@/features/materiels/family'
 import type { MaterielListItem } from '@/features/materiels/types'
 
 type Props = {
@@ -462,34 +458,4 @@ function EmptyMateriel({ tokens }: { tokens: (typeof STATUS_TOKENS)[StatusKey] }
       </Link>
     </div>
   )
-}
-
-function MaterielTypeIcon({
-  type,
-  className,
-  strokeWidth,
-}: {
-  type: MaterielType
-  className?: string
-  strokeWidth?: number
-}) {
-  const props = { className, strokeWidth, 'aria-hidden': true } as const
-  switch (type) {
-    case 'lit':
-      return <BedDouble {...props} />
-    case 'matelas':
-      return <Bed {...props} />
-    case 'baignoire':
-      return <Bath {...props} />
-    case 'brancard_douche':
-      return <ShowerHead {...props} />
-    case 'chaise_douche':
-      return <ShowerHead {...props} />
-    case 'wc':
-      return <Droplet {...props} />
-    case 'fauteuil_roulant':
-      return <Accessibility {...props} />
-    case 'materiel_transfert':
-      return <ArrowLeftRight {...props} />
-  }
 }

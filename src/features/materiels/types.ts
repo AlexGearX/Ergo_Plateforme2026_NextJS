@@ -14,7 +14,13 @@ export type MaterielEntretien = Database['public']['Tables']['materiels_entretie
 export type MaterielEntretienInsert = Database['public']['Tables']['materiels_entretiens']['Insert']
 
 export type MaterielWithRelations = Materiel & {
-  piece: { id: string; nom: string; maison_id: string } | null
+  piece: {
+    id: string
+    nom: string
+    type: string
+    maison_id: string
+    maison: { id: string; nom: string; numero: number; slug: string } | null
+  } | null
   personne: { id: string; nom: string; prenom: string } | null
   fauteuil: MaterielFauteuilRoulant | null
   corset_siege: CorsetSiege | null

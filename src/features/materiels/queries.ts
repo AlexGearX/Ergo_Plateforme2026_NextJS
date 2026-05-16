@@ -19,10 +19,9 @@ const DETAIL_SELECT = `
   id, type, nom, modele, reference, numero_serie, date_achat, numero_mas,
   duree_vie_annees, commentaire, piece_id, personne_id, date_pret, date_retour_prevue,
   created_at, updated_at,
-  piece:pieces(id, nom, maison_id),
+  piece:pieces(id, nom, type, maison_id, maison:maisons(id, nom, numero, slug)),
   personne:personnes(id, nom, prenom),
   fauteuil:materiels_fauteuil_roulant(*),
-  corset_siege:corsets_sieges(*),
   entretiens:materiels_entretiens(*)
 `
 
@@ -52,13 +51,20 @@ export async function getMaterielById(id: string): Promise<MaterielWithRelations
   const supabase = await createClient()
   if (!supabase) return null
 
-  const { data, error } = await supabase.from('materiels').select(DETAIL_SELECT).eq('id', id).maybeSingle()
+  const [materielRes, corsetRes] = await Promise.all([
+    supabase.from('materiels').select(DETAIL_SELECT).eq('id', id).maybeSingle(),
+    supabase.from('corsets_sieges').select('*').eq('materiel_id', id).maybeSingle(),
+  ])
 
-  if (error) {
-    console.error('[materiels] getMaterielById failed:', error)
+  if (materielRes.error) {
+    console.error('[materiels] getMaterielById failed:', materielRes.error)
     return null
   }
-  if (!data) return null
+  if (!materielRes.data) return null
 
-  return data as unknown as MaterielWithRelations
+  if (corsetRes.error) {
+    console.warn('[materiels] corset_siege lookup failed:', corsetRes.error)
+  }
+
+  return { ...materielRes.data, corset_siege: corsetRes.data ?? null } as unknown as MaterielWithRelations
 }

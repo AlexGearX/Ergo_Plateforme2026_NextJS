@@ -3,78 +3,18 @@
 import { useEffect, useMemo, useRef, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import {
-  Accessibility,
-  ArrowLeftRight,
-  ArrowUpRight,
-  Bath,
-  Bed,
-  BedDouble,
-  CalendarRange,
-  Droplet,
-  Plus,
-  ShowerHead,
-  X,
-} from 'lucide-react'
+import { ArrowUpRight, Bath, CalendarRange, Plus, X } from 'lucide-react'
 import { gsap } from 'gsap'
 import { AppHeader } from '@/components/layout/app-header'
 import { BotanicBackdrop } from '@/components/layout/botanic-backdrop'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MATERIEL_TYPES, MATERIEL_TYPE_LABELS, type MaterielType } from '@/features/materiels/constants'
+import { FAMILY_TOKENS, FamilyIcon, MaterielTypeIcon, familyForType, type FamilyKey } from '@/features/materiels/family'
 import type { MaterielListItem } from '@/features/materiels/types'
 import type { MaisonWithSimplePieces } from '@/features/maisons/queries'
 import { cn } from '@/lib/utils'
 
 const ALL_VALUE = '__all__'
-
-type FamilyKey = 'couchage' | 'hygiene' | 'mobilite'
-
-type FamilyTokens = {
-  label: string
-  intro: string
-  surface: string
-  ink: string
-  border: string
-  watermark: string
-}
-
-const FAMILY_BY_TYPE: Record<MaterielType, FamilyKey> = {
-  lit: 'couchage',
-  matelas: 'couchage',
-  baignoire: 'hygiene',
-  brancard_douche: 'hygiene',
-  chaise_douche: 'hygiene',
-  wc: 'hygiene',
-  fauteuil_roulant: 'mobilite',
-  materiel_transfert: 'mobilite',
-}
-
-const FAMILY_TOKENS: Record<FamilyKey, FamilyTokens> = {
-  couchage: {
-    label: 'Couchage & repos',
-    intro: 'Lits, matelas et supports pour le sommeil.',
-    surface: 'oklch(0.96 0.025 70)',
-    ink: 'oklch(0.4 0.1 60)',
-    border: 'oklch(0.86 0.06 70)',
-    watermark: 'oklch(0.82 0.08 70)',
-  },
-  hygiene: {
-    label: 'Hygiène & eau',
-    intro: 'Baignoires, douches, sanitaires et brancards.',
-    surface: 'oklch(0.95 0.03 225)',
-    ink: 'oklch(0.4 0.12 230)',
-    border: 'oklch(0.84 0.06 225)',
-    watermark: 'oklch(0.8 0.08 225)',
-  },
-  mobilite: {
-    label: 'Mobilité & transfert',
-    intro: 'Fauteuils, aides au transfert et matériel de portage.',
-    surface: 'oklch(0.95 0.035 150)',
-    ink: 'oklch(0.4 0.11 155)',
-    border: 'oklch(0.83 0.07 150)',
-    watermark: 'oklch(0.78 0.1 150)',
-  },
-}
 
 type Props = {
   materiels: MaterielListItem[]
@@ -103,7 +43,7 @@ export function MaterielsClient({ materiels, maisons, filters }: Props) {
   const grouped = useMemo(() => {
     const map = new Map<FamilyKey, MaterielListItem[]>()
     for (const m of materiels) {
-      const family = FAMILY_BY_TYPE[m.type as MaterielType] ?? 'mobilite'
+      const family = familyForType(m.type as MaterielType)
       const list = map.get(family) ?? []
       list.push(m)
       map.set(family, list)
@@ -118,7 +58,7 @@ export function MaterielsClient({ materiels, maisons, filters }: Props) {
   const stats = useMemo(() => {
     const prets = materiels.filter(m => m.date_pret).length
     const attribues = materiels.filter(m => m.personne).length
-    const familles = new Set(materiels.map(m => FAMILY_BY_TYPE[m.type as MaterielType])).size
+    const familles = new Set(materiels.map(m => familyForType(m.type as MaterielType))).size
     return { total: materiels.length, prets, attribues, familles }
   }, [materiels])
 
@@ -514,48 +454,6 @@ function EmptyState({ hasFilters, onReset }: { hasFilters: boolean; onReset: () 
       </div>
     </div>
   )
-}
-
-function FamilyIcon({ family, color }: { family: FamilyKey; color: string }) {
-  const props = { className: 'size-5', style: { color }, 'aria-hidden': true } as const
-  switch (family) {
-    case 'couchage':
-      return <BedDouble {...props} />
-    case 'hygiene':
-      return <Bath {...props} />
-    case 'mobilite':
-      return <Accessibility {...props} />
-  }
-}
-
-function MaterielTypeIcon({
-  type,
-  className,
-  strokeWidth,
-}: {
-  type: MaterielType
-  className?: string
-  strokeWidth?: number
-}) {
-  const props = { className, strokeWidth, 'aria-hidden': true } as const
-  switch (type) {
-    case 'lit':
-      return <BedDouble {...props} />
-    case 'matelas':
-      return <Bed {...props} />
-    case 'baignoire':
-      return <Bath {...props} />
-    case 'brancard_douche':
-      return <ShowerHead {...props} />
-    case 'chaise_douche':
-      return <ShowerHead {...props} />
-    case 'wc':
-      return <Droplet {...props} />
-    case 'fauteuil_roulant':
-      return <Accessibility {...props} />
-    case 'materiel_transfert':
-      return <ArrowLeftRight {...props} />
-  }
 }
 
 function PaperGrid() {
