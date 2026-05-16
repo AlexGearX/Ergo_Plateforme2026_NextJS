@@ -37,8 +37,8 @@ export function PersonnesClient({ personnes }: Props) {
   const rootRef = useRef<HTMLDivElement | null>(null)
 
   const { internes, externes, withDrive } = useMemo(() => {
-    const internes = personnes.filter(p => p.piece)
-    const externes = personnes.filter(p => !p.piece)
+    const internes = personnes.filter(p => p.type === 'interne')
+    const externes = personnes.filter(p => p.type === 'externe')
     const withDrive = personnes.filter(p => p.lien).length
     return { internes, externes, withDrive }
   }, [personnes])

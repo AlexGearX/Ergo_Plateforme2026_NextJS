@@ -244,6 +244,7 @@ export type Database = {
           nom: string
           piece_id: string | null
           prenom: string
+          type: Database["public"]["Enums"]["personne_type"]
           updated_at: string
         }
         Insert: {
@@ -253,6 +254,7 @@ export type Database = {
           nom: string
           piece_id?: string | null
           prenom: string
+          type?: Database["public"]["Enums"]["personne_type"]
           updated_at?: string
         }
         Update: {
@@ -262,6 +264,7 @@ export type Database = {
           nom?: string
           piece_id?: string | null
           prenom?: string
+          type?: Database["public"]["Enums"]["personne_type"]
           updated_at?: string
         }
         Relationships: [
@@ -329,6 +332,7 @@ export type Database = {
         | "fauteuil_roulant"
         | "chaise_douche"
         | "wc"
+      personne_type: "interne" | "externe"
       piece_type:
         | "chambre"
         | "salle_de_bain"
@@ -472,6 +476,7 @@ export const Constants = {
         "chaise_douche",
         "wc",
       ],
+      personne_type: ["interne", "externe"],
       piece_type: [
         "chambre",
         "salle_de_bain",

@@ -10,7 +10,7 @@ export async function listPersonnes(): Promise<PersonneWithPiece[]> {
 
   const { data, error } = await supabase
     .from('personnes')
-    .select('id, nom, prenom, lien, piece_id, created_at, updated_at, piece:pieces(id, nom, maison_id)')
+    .select('id, nom, prenom, type, lien, piece_id, created_at, updated_at, piece:pieces(id, nom, maison_id)')
     .order('nom', { ascending: true })
     .order('prenom', { ascending: true })
 
@@ -27,7 +27,7 @@ export async function getPersonneById(id: string): Promise<PersonneWithPiece | n
 
   const { data, error } = await supabase
     .from('personnes')
-    .select('id, nom, prenom, lien, piece_id, created_at, updated_at, piece:pieces(id, nom, maison_id)')
+    .select('id, nom, prenom, type, lien, piece_id, created_at, updated_at, piece:pieces(id, nom, maison_id)')
     .eq('id', id)
     .maybeSingle()
 

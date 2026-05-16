@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { personneInsertSchema, personneUpdateSchema } from '@/features/personnes/schemas'
-import type { Personne } from '@/features/personnes/types'
+import type { Personne, PersonneInsert, PersonneUpdate } from '@/features/personnes/types'
 
 type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string; fieldErrors?: Record<string, string[]> }
 
@@ -20,7 +20,8 @@ export async function createPersonne(input: unknown): Promise<ActionResult<Perso
   const supabase = await createClient()
   if (!supabase) return { ok: false, error: 'Supabase indisponible' }
 
-  const { data, error } = await supabase.from('personnes').insert(parsed.data).select().single()
+  const payload: PersonneInsert = parsed.data
+  const { data, error } = await supabase.from('personnes').insert(payload).select().single()
 
   if (error) return { ok: false, error: error.message }
 
@@ -41,7 +42,8 @@ export async function updatePersonne(id: string, input: unknown): Promise<Action
   const supabase = await createClient()
   if (!supabase) return { ok: false, error: 'Supabase indisponible' }
 
-  const { data, error } = await supabase.from('personnes').update(parsed.data).eq('id', id).select().single()
+  const payload: PersonneUpdate = parsed.data
+  const { data, error } = await supabase.from('personnes').update(payload).eq('id', id).select().single()
 
   if (error) return { ok: false, error: error.message }
 

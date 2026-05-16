@@ -23,7 +23,6 @@ import { ROUTES } from '@/lib/routes'
 type NavItem = { href: string; label: string }
 
 const NAV: NavItem[] = [
-  { href: '/', label: 'Vue d’ensemble' },
   { href: '/materiels', label: 'Matériels' },
   { href: '/personnes', label: 'Personnes' },
   { href: '/aides-repas', label: 'Aides au repas' },

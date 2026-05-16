@@ -9,9 +9,11 @@ import { AlertCircle, FileText, HomeIcon, UserCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { PieceSelect } from '@/features/maisons/components/piece-select'
 import type { MaisonWithSimplePieces } from '@/features/maisons/queries'
+import { PERSONNE_TYPES, PERSONNE_TYPE_LABELS } from '@/features/personnes/constants'
 import { personneInsertSchema, type PersonneFormFields } from '@/features/personnes/schemas'
 import { createPersonne, updatePersonne } from '@/features/personnes/actions'
 import type { Personne } from '@/features/personnes/types'
@@ -31,6 +33,7 @@ export function PersonneForm({ maisons, initial, mode }: Props) {
     defaultValues: {
       nom: initial?.nom ?? '',
       prenom: initial?.prenom ?? '',
+      type: initial?.type ?? 'interne',
       lien: initial?.lien ?? '',
       piece_id: initial?.piece_id ?? null,
     },
@@ -102,8 +105,34 @@ export function PersonneForm({ maisons, initial, mode }: Props) {
           icon={<HomeIcon className="size-5" aria-hidden="true" />}
           eyebrow="Chapitre II"
           title="Rattachement"
-          intro="Choisissez une chambre si la personne est hébergée sur le site, sinon laissez vide."
+          intro="Interne (résidente sur le site) ou externe — et si interne, dans quelle chambre."
         >
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Type<span className="text-destructive ml-0.5">*</span>
+                </FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {PERSONNE_TYPES.map(t => (
+                      <SelectItem key={t} value={t}>
+                        {PERSONNE_TYPE_LABELS[t]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="piece_id"
