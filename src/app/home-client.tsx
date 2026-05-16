@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Boxes, Compass, Warehouse } from 'lucide-react'
+import { Boxes, Warehouse } from 'lucide-react'
 import { gsap } from 'gsap'
 import { AppHeader } from '@/components/layout/app-header'
 import { BotanicBackdrop } from '@/components/layout/botanic-backdrop'
@@ -51,6 +51,79 @@ const TREES: Tree[] = [
   // Bord inférieur
   { x: 350, y: 500, size: 9, variant: 'leaf' },
   { x: 760, y: 500, size: 9, variant: 'pine' },
+]
+
+type Flower = { x: number; y: number; tone: 'yellow' | 'white' | 'pink' }
+
+const FLOWERS: Flower[] = [
+  // Bordure basse — entre les maisons du bas et les arbres
+  { x: 280, y: 510, tone: 'yellow' },
+  { x: 295, y: 504, tone: 'white' },
+  { x: 308, y: 512, tone: 'yellow' },
+  { x: 470, y: 506, tone: 'white' },
+  { x: 485, y: 511, tone: 'pink' },
+  { x: 500, y: 504, tone: 'white' },
+  { x: 700, y: 510, tone: 'yellow' },
+  { x: 715, y: 504, tone: 'pink' },
+  // Bordure haute
+  { x: 245, y: 60, tone: 'white' },
+  { x: 260, y: 50, tone: 'yellow' },
+  { x: 870, y: 55, tone: 'pink' },
+  { x: 885, y: 64, tone: 'white' },
+  // Marges latérales
+  { x: 35, y: 380, tone: 'yellow' },
+  { x: 50, y: 395, tone: 'white' },
+  { x: 1075, y: 380, tone: 'white' },
+  { x: 1060, y: 395, tone: 'yellow' },
+  // Petits groupes intérieurs
+  { x: 410, y: 100, tone: 'yellow' },
+  { x: 660, y: 110, tone: 'pink' },
+]
+
+type Animal = {
+  id: string
+  type: 'rabbit' | 'hedgehog' | 'bird'
+  hop: boolean
+  path: Array<{ x: number; y: number; duration: number }>
+}
+
+const ANIMALS: Animal[] = [
+  {
+    id: 'rabbit-1',
+    type: 'rabbit',
+    hop: true,
+    path: [
+      { x: 220, y: 488, duration: 0 },
+      { x: 320, y: 498, duration: 4.5 },
+      { x: 450, y: 482, duration: 4 },
+      { x: 320, y: 502, duration: 4.5 },
+      { x: 220, y: 488, duration: 4.5 },
+    ],
+  },
+  {
+    id: 'hedgehog-1',
+    type: 'hedgehog',
+    hop: false,
+    path: [
+      { x: 880, y: 498, duration: 0 },
+      { x: 800, y: 506, duration: 7 },
+      { x: 720, y: 492, duration: 6 },
+      { x: 800, y: 506, duration: 6 },
+      { x: 880, y: 498, duration: 7 },
+    ],
+  },
+  {
+    id: 'bird-1',
+    type: 'bird',
+    hop: true,
+    path: [
+      { x: 540, y: 506, duration: 0 },
+      { x: 595, y: 500, duration: 3 },
+      { x: 640, y: 508, duration: 3 },
+      { x: 595, y: 500, duration: 3 },
+      { x: 540, y: 506, duration: 3 },
+    ],
+  },
 ]
 
 function pctX(px: number) {
@@ -191,6 +264,37 @@ function SitePlan({ markers, stockage }: { markers: MaisonMarker[]; stockage: Ma
           { opacity: 0, scale: 0.6, y: 18, duration: 0.85, ease: 'back.out(1.5)' },
           '-=0.55',
         )
+
+      ANIMALS.forEach(animal => {
+        const outerSel = `[data-animal="${animal.id}"]`
+        const innerSel = `[data-animal-inner="${animal.id}"]`
+
+        gsap.set(outerSel, { x: animal.path[0].x, y: animal.path[0].y })
+        gsap.set(innerSel, { transformOrigin: '50% 50%', scaleX: 1 })
+        gsap.to(outerSel, { opacity: 1, duration: 0.6, delay: 1.6 })
+
+        const loop = gsap.timeline({ repeat: -1, delay: 1.7 })
+        for (let i = 1; i < animal.path.length; i++) {
+          const prev = animal.path[i - 1]
+          const next = animal.path[i]
+          const dir = next.x > prev.x ? 1 : next.x < prev.x ? -1 : 0
+          if (dir !== 0) {
+            loop.to(innerSel, { scaleX: dir, duration: 0.25, ease: 'power2.out' })
+          }
+          loop.to(outerSel, { x: next.x, y: next.y, duration: next.duration, ease: 'sine.inOut' }, '<+=0.1')
+        }
+
+        if (animal.hop) {
+          gsap.to(innerSel, {
+            y: -2.5,
+            duration: 0.4,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
+            delay: 1.7,
+          })
+        }
+      })
     }, planRef)
     return () => ctx.revert()
   }, [])
@@ -215,16 +319,43 @@ function SitePlan({ markers, stockage }: { markers: MaisonMarker[]; stockage: Ma
             <pattern id="stockagePath" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="0.6" fill="oklch(0.55 0.04 70)" opacity="0.35" />
             </pattern>
+            <pattern id="grassBlades" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+              <g stroke="oklch(0.55 0.13 145)" strokeWidth="0.6" strokeLinecap="round" fill="none">
+                <path d="M 6 38 L 6 32 M 8 38 L 9 30 M 10 38 L 10 33" />
+                <path d="M 24 18 L 24 12 M 26 18 L 27 10 M 28 18 L 28 13" />
+                <path d="M 38 42 L 38 34 M 40 42 L 41 32 M 42 42 L 42 35" />
+                <path d="M 16 6 L 16 1 M 18 6 L 19 0 M 20 6 L 20 2" />
+              </g>
+              <g stroke="oklch(0.62 0.12 145)" strokeWidth="0.5" strokeLinecap="round" fill="none" opacity="0.65">
+                <path d="M 32 28 L 33 22" />
+                <path d="M 12 26 L 13 20" />
+                <path d="M 44 14 L 45 8" />
+                <path d="M 2 10 L 3 4" />
+                <path d="M 36 6 L 37 2" />
+              </g>
+            </pattern>
+            <pattern id="grassClumps" x="0" y="0" width={VIEW_W} height={80} patternUnits="userSpaceOnUse">
+              <rect x="0" y="0" width={VIEW_W} height="40" fill="oklch(0.5 0.08 135)" opacity="0.04" />
+            </pattern>
           </defs>
 
-          {/* Pelouse de base */}
-          <rect
-            data-anim="ground"
-            width={VIEW_W}
-            height={VIEW_H}
-            fill="oklch(0.95 0.025 130)"
-            className="dark:fill-[oklch(0.24_0.022_130)]"
-          />
+          {/* Pelouse — base + texture + fleurs */}
+          <g data-anim="ground">
+            <rect
+              width={VIEW_W}
+              height={VIEW_H}
+              fill="oklch(0.95 0.025 130)"
+              className="dark:fill-[oklch(0.24_0.022_130)]"
+            />
+            {/* Bandes de tonte très subtiles */}
+            <rect width={VIEW_W} height={VIEW_H} fill="url(#grassClumps)" className="opacity-90 dark:opacity-40" />
+            {/* Brins d'herbe répartis */}
+            <rect width={VIEW_W} height={VIEW_H} fill="url(#grassBlades)" className="opacity-80 dark:opacity-45" />
+            {/* Petites fleurs sauvages */}
+            {FLOWERS.map((f, i) => (
+              <FlowerDot key={i} x={f.x} y={f.y} tone={f.tone} />
+            ))}
+          </g>
 
           {/* Halo lumineux subtil au centre */}
           <rect width={VIEW_W} height={VIEW_H} fill="url(#planGlow)" className="dark:opacity-20" />
@@ -254,6 +385,11 @@ function SitePlan({ markers, stockage }: { markers: MaisonMarker[]; stockage: Ma
           {/* Arbres dispersés */}
           {TREES.map((t, i) => (
             <TreeShape key={i} x={t.x} y={t.y} size={t.size} variant={t.variant} />
+          ))}
+
+          {/* Petits animaux qui gambadent */}
+          {ANIMALS.map(a => (
+            <AnimalSprite key={a.id} animal={a} />
           ))}
         </svg>
 
@@ -400,6 +536,122 @@ function TreeShape({ x, y, size, variant }: Tree) {
         fill={light}
         className="dark:fill-[oklch(0.58_0.1_150)]"
       />
+    </g>
+  )
+}
+
+function FlowerDot({ x, y, tone }: Flower) {
+  const petal =
+    tone === 'yellow' ? 'oklch(0.92 0.16 95)' : tone === 'pink' ? 'oklch(0.88 0.1 15)' : 'oklch(0.99 0.01 100)'
+  const core = 'oklch(0.72 0.18 85)'
+  const stem = 'oklch(0.5 0.13 145)'
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <line x1="0" y1="0" x2="0" y2="-3" stroke={stem} strokeWidth="0.45" strokeLinecap="round" />
+      <circle cx="-1.2" cy="-3.4" r="0.85" fill={petal} />
+      <circle cx="1.2" cy="-3.4" r="0.85" fill={petal} />
+      <circle cx="0" cy="-4.6" r="0.85" fill={petal} />
+      <circle cx="0" cy="-2.4" r="0.85" fill={petal} />
+      <circle cx="0" cy="-3.4" r="0.55" fill={core} />
+    </g>
+  )
+}
+
+function AnimalSprite({ animal }: { animal: Animal }) {
+  return (
+    <g data-animal={animal.id} style={{ opacity: 0 }}>
+      <g data-animal-inner={animal.id}>
+        {animal.type === 'rabbit' && <RabbitShape />}
+        {animal.type === 'hedgehog' && <HedgehogShape />}
+        {animal.type === 'bird' && <BirdShape />}
+      </g>
+    </g>
+  )
+}
+
+function RabbitShape() {
+  return (
+    <g>
+      <ellipse cx="0" cy="5" rx="8.5" ry="1.3" fill="black" opacity="0.18" />
+      <ellipse
+        cx="-5"
+        cy="3"
+        rx="2.8"
+        ry="1.6"
+        fill="oklch(0.92 0.012 80)"
+        className="dark:fill-[oklch(0.78_0.02_75)]"
+      />
+      <circle cx="-8" cy="-1" r="1.9" fill="white" className="dark:fill-[oklch(0.92_0.01_85)]" />
+      <ellipse cx="-1" cy="0" rx="6.5" ry="4" fill="oklch(0.97 0.012 80)" className="dark:fill-[oklch(0.85_0.02_80)]" />
+      <circle cx="5.2" cy="-3" r="3.3" fill="oklch(0.97 0.012 80)" className="dark:fill-[oklch(0.85_0.02_80)]" />
+      <ellipse
+        cx="3.5"
+        cy="-8"
+        rx="1"
+        ry="3.6"
+        fill="oklch(0.93 0.015 75)"
+        className="dark:fill-[oklch(0.8_0.02_75)]"
+      />
+      <ellipse
+        cx="6.7"
+        cy="-8.6"
+        rx="1.1"
+        ry="4"
+        fill="oklch(0.97 0.012 80)"
+        className="dark:fill-[oklch(0.85_0.02_80)]"
+      />
+      <ellipse cx="6.7" cy="-8" rx="0.5" ry="2.6" fill="oklch(0.82 0.06 25)" opacity="0.7" />
+      <circle cx="6.7" cy="-2.9" r="0.55" fill="oklch(0.18 0.02 60)" />
+      <circle cx="8.3" cy="-1.8" r="0.4" fill="oklch(0.5 0.1 25)" />
+    </g>
+  )
+}
+
+function HedgehogShape() {
+  return (
+    <g>
+      <ellipse cx="0" cy="4.2" rx="9" ry="1.3" fill="black" opacity="0.18" />
+      <path
+        d="M -8 2 Q -9 -5 -3 -7 Q 4 -8 8 -3 Q 9 1 7 2 Z"
+        fill="oklch(0.42 0.06 60)"
+        className="dark:fill-[oklch(0.5_0.06_60)]"
+      />
+      <path
+        d="M -6 -3 L -5 -6 M -3 -5 L -2 -7.5 M 0 -6 L 1 -8 M 3 -6 L 4 -7.5 M 5.5 -4 L 6.5 -5.5"
+        stroke="oklch(0.28 0.05 60)"
+        className="dark:stroke-[oklch(0.35_0.05_60)]"
+        strokeWidth="0.55"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse
+        cx="6.5"
+        cy="0.6"
+        rx="4"
+        ry="2.5"
+        fill="oklch(0.85 0.04 75)"
+        className="dark:fill-[oklch(0.75_0.04_75)]"
+      />
+      <circle cx="10" cy="0.2" r="0.7" fill="oklch(0.18 0.02 60)" />
+      <circle cx="7.5" cy="-1" r="0.5" fill="oklch(0.18 0.02 60)" />
+      <ellipse cx="-3" cy="2.5" rx="1.4" ry="0.6" fill="oklch(0.28 0.04 60)" />
+      <ellipse cx="3" cy="2.8" rx="1.4" ry="0.6" fill="oklch(0.28 0.04 60)" />
+    </g>
+  )
+}
+
+function BirdShape() {
+  return (
+    <g>
+      <ellipse cx="0" cy="3.4" rx="5" ry="1" fill="black" opacity="0.18" />
+      <ellipse cx="0" cy="0.4" rx="4.2" ry="3" fill="oklch(0.62 0.13 65)" />
+      <path d="M -3.5 -0.4 L -6.5 -1.5 L -5.5 0.4 L -6.5 1.8 L -3.5 0.8 Z" fill="oklch(0.5 0.13 55)" />
+      <ellipse cx="-0.8" cy="-0.2" rx="2.4" ry="1.6" fill="oklch(0.55 0.13 60)" opacity="0.55" />
+      <circle cx="3.3" cy="-2" r="2.1" fill="oklch(0.66 0.13 70)" />
+      <path d="M 5 -2 L 7.2 -1.6 L 5 -1.1 Z" fill="oklch(0.72 0.15 50)" />
+      <circle cx="4" cy="-2.4" r="0.45" fill="oklch(0.15 0.02 60)" />
+      <line x1="-0.8" y1="3.2" x2="-0.8" y2="4.6" stroke="oklch(0.5 0.1 50)" strokeWidth="0.55" strokeLinecap="round" />
+      <line x1="0.9" y1="3.2" x2="0.9" y2="4.6" stroke="oklch(0.5 0.1 50)" strokeWidth="0.55" strokeLinecap="round" />
     </g>
   )
 }
