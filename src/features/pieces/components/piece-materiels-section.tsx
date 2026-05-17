@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowUpRight, Boxes, CalendarRange } from 'lucide-react'
+import { ArrowUpRight, Boxes } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from '@/components/detail/section-heading'
 import { Field } from '@/components/detail/field'
@@ -68,7 +68,6 @@ function MaterielCard({
   sharedLabel: string
 }) {
   const type = materiel.type as MaterielType
-  const hasPret = Boolean(materiel.date_pret)
   const personne = materiel.personne
 
   return (
@@ -126,24 +125,6 @@ function MaterielCard({
               value={personne ? `${personne.prenom} ${personne.nom}` : sharedLabel}
               tone={palette.ink}
             />
-            {hasPret && (
-              <Field
-                label="Prêt"
-                value={
-                  <span className="inline-flex items-center gap-1.5">
-                    <CalendarRange className="size-3" />
-                    <span className="tabular-nums">{materiel.date_pret}</span>
-                    {materiel.date_retour_prevue && (
-                      <>
-                        <span className="opacity-50">→</span>
-                        <span className="tabular-nums">{materiel.date_retour_prevue}</span>
-                      </>
-                    )}
-                  </span>
-                }
-                tone={palette.ink}
-              />
-            )}
           </dl>
         </div>
       </Link>

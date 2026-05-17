@@ -27,10 +27,7 @@ export type MaterielWithRelations = Materiel & {
   entretiens: MaterielEntretien[]
 }
 
-export type MaterielListItem = Pick<
-  Materiel,
-  'id' | 'type' | 'nom' | 'modele' | 'date_pret' | 'date_retour_prevue' | 'created_at' | 'updated_at'
-> & {
+export type MaterielListItem = Pick<Materiel, 'id' | 'type' | 'nom' | 'modele' | 'created_at' | 'updated_at'> & {
   piece: { id: string; nom: string; maison_id: string } | null
   personne: { id: string; nom: string; prenom: string } | null
 }

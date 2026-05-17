@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowUpRight, CalendarRange } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Field } from '@/components/detail/field'
 import { MATERIEL_TYPE_LABELS, type MaterielType } from '@/features/materiels/constants'
@@ -16,7 +16,6 @@ export function MaterielRow({ materiel, family }: Props) {
   const type = materiel.type as MaterielType
   const personneName = materiel.personne ? `${materiel.personne.prenom} ${materiel.personne.nom}` : null
   const pieceName = materiel.piece?.nom ?? null
-  const hasPret = Boolean(materiel.date_pret)
 
   return (
     <li data-anim="materiel-row">
@@ -70,25 +69,6 @@ export function MaterielRow({ materiel, family }: Props) {
           <dl className="mt-auto grid grid-cols-1 gap-x-6 gap-y-2 text-[12px] sm:grid-cols-2">
             <Field label="Pièce" value={pieceName ?? '—'} tone={tokens.ink} />
             <Field label="Personne" value={personneName ?? 'Partagé'} tone={tokens.ink} />
-            {hasPret && (
-              <Field
-                label="Prêt"
-                value={
-                  <span className="inline-flex items-center gap-1.5">
-                    <CalendarRange className="size-3" />
-                    <span className="tabular-nums">{materiel.date_pret}</span>
-                    {materiel.date_retour_prevue && (
-                      <>
-                        <span className="opacity-50">→</span>
-                        <span className="tabular-nums">{materiel.date_retour_prevue}</span>
-                      </>
-                    )}
-                  </span>
-                }
-                tone={tokens.ink}
-                span={2}
-              />
-            )}
           </dl>
         </div>
       </Link>

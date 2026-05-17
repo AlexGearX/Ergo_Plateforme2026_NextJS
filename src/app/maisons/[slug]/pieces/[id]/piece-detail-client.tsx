@@ -11,15 +11,18 @@ import { PieceHeader } from '@/features/pieces/components/piece-header'
 import { PieceMetaSection } from '@/features/pieces/components/piece-meta-section'
 import { PieceOccupantSection } from '@/features/pieces/components/piece-occupant-section'
 import { PieceMaterielsSection } from '@/features/pieces/components/piece-materiels-section'
+import { PieceMouvementsSection } from '@/features/mouvements/components/piece-mouvements-section'
 import type { PieceWithRelations } from '@/features/pieces/types'
 import type { MaterielListItem } from '@/features/materiels/types'
+import type { MouvementWithMateriel } from '@/features/mouvements/types'
 
 type Props = {
   piece: PieceWithRelations
   materiels: MaterielListItem[]
+  mouvements: MouvementWithMateriel[]
 }
 
-export function PieceDetailClient({ piece, materiels }: Props) {
+export function PieceDetailClient({ piece, materiels, mouvements }: Props) {
   const { t } = useLocale()
   const rootRef = useRef<HTMLDivElement | null>(null)
   const isStockage = piece.maison?.type === 'stockage'
@@ -55,6 +58,8 @@ export function PieceDetailClient({ piece, materiels }: Props) {
           {showOccupant && <PieceOccupantSection piece={piece} />}
 
           <PieceMaterielsSection piece={piece} materiels={materiels} isStockage={isStockage} />
+
+          <PieceMouvementsSection mouvements={mouvements} />
         </main>
       </div>
     </div>

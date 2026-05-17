@@ -56,10 +56,9 @@ export function MaterielsClient({ materiels, maisons, filters }: Props) {
   }, [materiels])
 
   const stats = useMemo(() => {
-    const prets = materiels.filter(m => m.date_pret).length
     const attribues = materiels.filter(m => m.personne).length
     const familles = new Set(materiels.map(m => familyForType(m.type as MaterielType))).size
-    return { total: materiels.length, prets, attribues, familles }
+    return { total: materiels.length, prets: attribues, attribues, familles }
   }, [materiels])
 
   useGsap(() => {

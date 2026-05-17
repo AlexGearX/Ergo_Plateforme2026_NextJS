@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { entretienInsertSchema, materielFormSchema, materielUpdateSchema } from '@/features/materiels/schemas'
-import type { Materiel, MaterielEntretien } from '@/features/materiels/types'
+import type { Materiel, MaterielEntretien, MaterielUpdate } from '@/features/materiels/types'
 
 type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string; fieldErrors?: Record<string, string[]> }
 
@@ -20,11 +20,26 @@ export async function createMateriel(input: unknown): Promise<ActionResult<Mater
   const supabase = await createClient()
   if (!supabase) return { ok: false, error: 'Supabase indisponible' }
 
-  const { fauteuil, corset_siege, ...base } = parsed.data
+  const { fauteuil, corset_siege, date_retour_prevue, ...base } = parsed.data
 
   const { data: materiel, error: materielError } = await supabase.from('materiels').insert(base).select().single()
 
   if (materielError) return { ok: false, error: materielError.message }
+
+  // Mouvement initial : pose la trace dans l'historique. Le type est déduit par
+  // la RPC (pret si personne, deplacement sinon). Snapshot avant = null/null
+  // puisque le matériel vient d'être créé.
+  const { error: mouvementError } = await supabase.rpc('record_materiel_mouvement', {
+    p_materiel_id: materiel.id,
+    p_piece_apres_id: base.piece_id,
+    ...(base.personne_id ? { p_personne_apres_id: base.personne_id } : {}),
+    ...(date_retour_prevue ? { p_date_retour_prevue: date_retour_prevue } : {}),
+  })
+
+  if (mouvementError) {
+    await supabase.from('materiels').delete().eq('id', materiel.id)
+    return { ok: false, error: `Mouvement initial : ${mouvementError.message}` }
+  }
 
   if (base.type === 'fauteuil_roulant' && fauteuil) {
     const { error: fauteuilError } = await supabase
@@ -65,11 +80,17 @@ export async function updateMateriel(id: string, input: unknown): Promise<Action
   const supabase = await createClient()
   if (!supabase) return { ok: false, error: 'Supabase indisponible' }
 
-  const { fauteuil, corset_siege, ...base } = parsed.data
+  // L'affectation (piece_id, personne_id, date_retour_prevue) passe exclusivement
+  // par enregistrerMouvement : on les ignore ici pour éviter une divergence
+  // entre l'historique et l'état courant.
+  const { fauteuil, corset_siege, piece_id, personne_id, date_retour_prevue, ...base } = parsed.data
+  void piece_id
+  void personne_id
+  void date_retour_prevue
 
   const { data: materiel, error: materielError } = await supabase
     .from('materiels')
-    .update(base)
+    .update(base satisfies MaterielUpdate)
     .eq('id', id)
     .select()
     .single()

@@ -88,13 +88,89 @@ export type Database = {
         }
         Relationships: []
       }
+      materiel_mouvements: {
+        Row: {
+          commentaire: string | null
+          created_at: string
+          created_by: string | null
+          date_retour_prevue: string | null
+          id: string
+          materiel_id: string
+          personne_apres_id: string | null
+          personne_avant_id: string | null
+          piece_apres_id: string | null
+          piece_avant_id: string | null
+          type: Database["public"]["Enums"]["mouvement_type"]
+        }
+        Insert: {
+          commentaire?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_retour_prevue?: string | null
+          id?: string
+          materiel_id: string
+          personne_apres_id?: string | null
+          personne_avant_id?: string | null
+          piece_apres_id?: string | null
+          piece_avant_id?: string | null
+          type: Database["public"]["Enums"]["mouvement_type"]
+        }
+        Update: {
+          commentaire?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_retour_prevue?: string | null
+          id?: string
+          materiel_id?: string
+          personne_apres_id?: string | null
+          personne_avant_id?: string | null
+          piece_apres_id?: string | null
+          piece_avant_id?: string | null
+          type?: Database["public"]["Enums"]["mouvement_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiel_mouvements_materiel_id_fkey"
+            columns: ["materiel_id"]
+            isOneToOne: false
+            referencedRelation: "materiels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiel_mouvements_personne_apres_id_fkey"
+            columns: ["personne_apres_id"]
+            isOneToOne: false
+            referencedRelation: "personnes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiel_mouvements_personne_avant_id_fkey"
+            columns: ["personne_avant_id"]
+            isOneToOne: false
+            referencedRelation: "personnes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiel_mouvements_piece_apres_id_fkey"
+            columns: ["piece_apres_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiel_mouvements_piece_avant_id_fkey"
+            columns: ["piece_avant_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materiels: {
         Row: {
           commentaire: string | null
           created_at: string
           date_achat: string | null
-          date_pret: string | null
-          date_retour_prevue: string | null
           duree_vie_annees: number | null
           id: string
           modele: string
@@ -111,8 +187,6 @@ export type Database = {
           commentaire?: string | null
           created_at?: string
           date_achat?: string | null
-          date_pret?: string | null
-          date_retour_prevue?: string | null
           duree_vie_annees?: number | null
           id?: string
           modele: string
@@ -129,8 +203,6 @@ export type Database = {
           commentaire?: string | null
           created_at?: string
           date_achat?: string | null
-          date_pret?: string | null
-          date_retour_prevue?: string | null
           duree_vie_annees?: number | null
           id?: string
           modele?: string
@@ -323,7 +395,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      record_materiel_mouvement: {
+        Args: {
+          p_commentaire?: string
+          p_date_retour_prevue?: string
+          p_materiel_id: string
+          p_personne_apres_id?: string
+          p_piece_apres_id: string
+          p_type?: Database["public"]["Enums"]["mouvement_type"]
+        }
+        Returns: {
+          commentaire: string | null
+          created_at: string
+          created_by: string | null
+          date_retour_prevue: string | null
+          id: string
+          materiel_id: string
+          personne_apres_id: string | null
+          personne_avant_id: string | null
+          piece_apres_id: string | null
+          piece_avant_id: string | null
+          type: Database["public"]["Enums"]["mouvement_type"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "materiel_mouvements"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       maison_type: "habitation" | "stockage"
@@ -336,6 +436,13 @@ export type Database = {
         | "fauteuil_roulant"
         | "chaise_douche"
         | "wc"
+      mouvement_type:
+        | "deplacement"
+        | "pret"
+        | "retour"
+        | "perte"
+        | "casse"
+        | "reparation"
       personne_type: "interne" | "externe"
       piece_type:
         | "chambre"
@@ -480,6 +587,14 @@ export const Constants = {
         "fauteuil_roulant",
         "chaise_douche",
         "wc",
+      ],
+      mouvement_type: [
+        "deplacement",
+        "pret",
+        "retour",
+        "perte",
+        "casse",
+        "reparation",
       ],
       personne_type: ["interne", "externe"],
       piece_type: [

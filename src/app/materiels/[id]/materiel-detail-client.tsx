@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { gsap } from 'gsap'
 import { useGsap } from '@/hooks/use-gsap'
 import { AppHeader } from '@/components/layout/app-header'
@@ -11,13 +11,36 @@ import { IdentificationSection } from '@/features/materiels/components/detail/id
 import { AffectationSection } from '@/features/materiels/components/detail/affectation-section'
 import { SpecsSection } from '@/features/materiels/components/detail/specs-section'
 import { EntretiensSection } from '@/features/materiels/components/detail/entretiens-section'
+import { MouvementsSection } from '@/features/mouvements/components/mouvements-section'
+import { MouvementDialog } from '@/features/mouvements/components/mouvement-dialog'
 import type { MaterielWithRelations } from '@/features/materiels/types'
+import type { MouvementWithRelations } from '@/features/mouvements/types'
+import type { MaisonWithSimplePieces } from '@/features/maisons/queries'
+import type { Personne } from '@/features/personnes/types'
 
-type Props = { materiel: MaterielWithRelations }
+type Props = {
+  materiel: MaterielWithRelations
+  mouvements: MouvementWithRelations[]
+  maisons: MaisonWithSimplePieces[]
+  personnes: Pick<Personne, 'id' | 'nom' | 'prenom'>[]
+}
 
-export function MaterielDetailClient({ materiel }: Props) {
+export function MaterielDetailClient({ materiel, mouvements, maisons, personnes }: Props) {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const isFauteuil = materiel.type === 'fauteuil_roulant'
+
+  // Dernier 'pret' qui n'a pas été suivi d'un 'retour'. Mouvements triés desc.
+  const pretActif = useMemo<MouvementWithRelations | null>(() => {
+    for (const m of mouvements) {
+      if (m.type === 'retour') return null
+      if (m.type === 'pret') return m
+    }
+    return null
+  }, [mouvements])
+
+  const chapters = isFauteuil
+    ? { specs: 'Chapitre III', entretiens: 'Chapitre IV', historique: 'Chapitre V' }
+    : { entretiens: 'Chapitre III', historique: 'Chapitre IV' }
 
   useGsap(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
@@ -42,9 +65,23 @@ export function MaterielDetailClient({ materiel }: Props) {
           <MaterielHeader materiel={materiel} />
 
           <IdentificationSection materiel={materiel} />
-          <AffectationSection materiel={materiel} />
-          {isFauteuil && <SpecsSection materiel={materiel} />}
-          <EntretiensSection materiel={materiel} chapter={isFauteuil ? 'Chapitre IV' : 'Chapitre III'} />
+          <AffectationSection materiel={materiel} pretActif={pretActif} />
+          {isFauteuil && 'specs' in chapters && <SpecsSection materiel={materiel} />}
+          <EntretiensSection materiel={materiel} chapter={chapters.entretiens} />
+          <MouvementsSection
+            materielType={materiel.type}
+            mouvements={mouvements}
+            chapter={chapters.historique}
+            action={
+              <MouvementDialog
+                materielId={materiel.id}
+                currentPieceId={materiel.piece_id}
+                currentPersonneId={materiel.personne_id}
+                maisons={maisons}
+                personnes={personnes}
+              />
+            }
+          />
         </main>
       </div>
     </div>

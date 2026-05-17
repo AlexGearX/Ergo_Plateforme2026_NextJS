@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { listMateriels } from '@/features/materiels/queries'
 import { getPersonneWithLocationById } from '@/features/personnes/queries'
+import { listMouvementsByPersonne } from '@/features/mouvements/queries'
 import { PersonneDetailClient } from '@/app/personnes/[id]/personne-detail-client'
 
 type Props = { params: Promise<{ id: string }> }
@@ -15,7 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PersonneDetailPage({ params }: Props) {
   const { id } = await params
-  const [personne, materiels] = await Promise.all([getPersonneWithLocationById(id), listMateriels({ personne_id: id })])
+  const [personne, materiels, mouvements] = await Promise.all([
+    getPersonneWithLocationById(id),
+    listMateriels({ personne_id: id }),
+    listMouvementsByPersonne(id),
+  ])
   if (!personne) notFound()
-  return <PersonneDetailClient personne={personne} materiels={materiels} />
+  return <PersonneDetailClient personne={personne} materiels={materiels} mouvements={mouvements} />
 }

@@ -5,12 +5,18 @@ import { MetaCard } from '@/components/detail/meta-card'
 import { FAMILY_TOKENS, familyForType } from '@/features/materiels/family'
 import type { MaterielType } from '@/features/materiels/constants'
 import type { MaterielWithRelations } from '@/features/materiels/types'
+import type { MouvementWithRelations } from '@/features/mouvements/types'
 
 const EMPTY = <span className="text-muted-foreground italic">—</span>
 
-type Props = { materiel: MaterielWithRelations }
+type Props = {
+  materiel: MaterielWithRelations
+  // Dernier mouvement de type 'pret' encore actif (= pas de 'retour' postérieur).
+  // Sert à afficher la fenêtre de prêt courante.
+  pretActif: MouvementWithRelations | null
+}
 
-export function AffectationSection({ materiel }: Props) {
+export function AffectationSection({ materiel, pretActif }: Props) {
   const type = materiel.type as MaterielType
   const tokens = FAMILY_TOKENS[familyForType(type)]
 
@@ -69,14 +75,14 @@ export function AffectationSection({ materiel }: Props) {
         <MetaCard
           label="Prêt"
           value={
-            materiel.date_pret ? (
+            pretActif ? (
               <span className="inline-flex items-center gap-1.5">
                 <CalendarRange className="size-3.5" />
-                <span className="tabular-nums">{materiel.date_pret}</span>
-                {materiel.date_retour_prevue && (
+                <span className="tabular-nums">{pretActif.created_at.slice(0, 10)}</span>
+                {pretActif.date_retour_prevue && (
                   <>
                     <span className="opacity-50">→</span>
-                    <span className="tabular-nums">{materiel.date_retour_prevue}</span>
+                    <span className="tabular-nums">{pretActif.date_retour_prevue}</span>
                   </>
                 )}
               </span>

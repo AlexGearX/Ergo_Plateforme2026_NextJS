@@ -10,15 +10,18 @@ import type { StatusKey } from '@/features/personnes/tokens'
 import { PersonneHeader } from '@/features/personnes/components/detail/personne-header'
 import { RattachementSection } from '@/features/personnes/components/detail/rattachement-section'
 import { MaterielsSection } from '@/features/personnes/components/detail/materiels-section'
+import { PersonnePretsSection } from '@/features/mouvements/components/personne-prets-section'
 import type { PersonneWithLocation } from '@/features/personnes/types'
 import type { MaterielListItem } from '@/features/materiels/types'
+import type { MouvementWithMateriel } from '@/features/mouvements/types'
 
 type Props = {
   personne: PersonneWithLocation
   materiels: MaterielListItem[]
+  mouvements: MouvementWithMateriel[]
 }
 
-export function PersonneDetailClient({ personne, materiels }: Props) {
+export function PersonneDetailClient({ personne, materiels, mouvements }: Props) {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const status: StatusKey = personne.type === 'externe' ? 'externe' : 'interne'
 
@@ -47,6 +50,7 @@ export function PersonneDetailClient({ personne, materiels }: Props) {
 
           <RattachementSection personne={personne} status={status} />
           <MaterielsSection materiels={materiels} status={status} />
+          <PersonnePretsSection personneId={personne.id} mouvements={mouvements} status={status} />
         </main>
       </div>
     </div>

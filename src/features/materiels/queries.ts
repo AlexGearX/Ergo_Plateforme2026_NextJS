@@ -10,14 +10,14 @@ export type MaterielFilters = {
 }
 
 const LIST_SELECT = `
-  id, type, nom, modele, date_pret, date_retour_prevue, created_at, updated_at,
+  id, type, nom, modele, created_at, updated_at,
   piece:pieces!inner(id, nom, maison_id),
   personne:personnes(id, nom, prenom)
 `
 
 const DETAIL_SELECT = `
   id, type, nom, modele, reference, numero_serie, date_achat, numero_mas,
-  duree_vie_annees, commentaire, piece_id, personne_id, date_pret, date_retour_prevue,
+  duree_vie_annees, commentaire, piece_id, personne_id,
   created_at, updated_at,
   piece:pieces(id, nom, type, maison_id, maison:maisons(id, nom, numero, slug)),
   personne:personnes(id, nom, prenom),

@@ -65,8 +65,7 @@ export function AffectationFormSection({ maisons, personnes }: Props) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <TextField<MaterielFormFields> name="date_pret" label="Date de prêt" type="date" />
-        <TextField<MaterielFormFields> name="date_retour_prevue" label="Retour prévu" type="date" />
+        <TextField<MaterielFormFields> name="date_retour_prevue" label="Retour prévu (optionnel)" type="date" />
       </div>
     </FormChapter>
   )

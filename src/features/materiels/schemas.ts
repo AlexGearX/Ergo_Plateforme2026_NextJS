@@ -24,7 +24,8 @@ export const materielBaseInsertSchema = z.object({
   piece_id: z.uuid(),
   personne_id: z.preprocess(v => (v === '' ? null : v), z.uuid().nullable().optional()),
 
-  date_pret: optionalDate(),
+  // Optionnel à la création : si renseigné, un mouvement initial 'pret' est créé
+  // avec cette date de retour prévue. Sinon, mouvement 'deplacement' (mise en stock).
   date_retour_prevue: optionalDate(),
 })
 
@@ -50,11 +51,11 @@ export const materielFormSchema = materielBaseInsertSchema
     corset_siege: corsetSiegeInsertSchema.optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.date_pret && data.date_retour_prevue && data.date_retour_prevue < data.date_pret) {
+    if (data.date_retour_prevue && !data.personne_id) {
       ctx.addIssue({
         code: 'custom',
         path: ['date_retour_prevue'],
-        message: 'La date de retour doit être postérieure à la date de prêt',
+        message: 'Une date de retour ne peut être renseignée que si une personne est attribuée.',
       })
     }
   })
@@ -86,7 +87,6 @@ export type MaterielFormFields = {
   commentaire: string
   piece_id: string
   personne_id: string | null
-  date_pret: string
   date_retour_prevue: string
   fauteuil: {
     prestataire: string

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Accessibility, ArrowUpRight, CalendarRange } from 'lucide-react'
+import { Accessibility, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from '@/components/detail/section-heading'
 import { Field } from '@/components/detail/field'
@@ -45,7 +45,6 @@ export function MaterielsSection({ materiels, status }: Props) {
 
 function MaterielCard({ materiel, tokens }: { materiel: MaterielListItem; tokens: StatusTokens }) {
   const type = materiel.type as MaterielType
-  const hasPret = Boolean(materiel.date_pret)
 
   return (
     <li data-anim="materiel">
@@ -98,24 +97,6 @@ function MaterielCard({ materiel, tokens }: { materiel: MaterielListItem; tokens
 
           <dl className="mt-auto grid grid-cols-1 gap-x-6 gap-y-2 text-[12px]">
             <Field label="Pièce" value={materiel.piece?.nom ?? '—'} tone={tokens.ink} />
-            {hasPret && (
-              <Field
-                label="Prêt"
-                value={
-                  <span className="inline-flex items-center gap-1.5">
-                    <CalendarRange className="size-3" />
-                    <span className="tabular-nums">{materiel.date_pret}</span>
-                    {materiel.date_retour_prevue && (
-                      <>
-                        <span className="opacity-50">→</span>
-                        <span className="tabular-nums">{materiel.date_retour_prevue}</span>
-                      </>
-                    )}
-                  </span>
-                }
-                tone={tokens.ink}
-              />
-            )}
           </dl>
         </div>
       </Link>

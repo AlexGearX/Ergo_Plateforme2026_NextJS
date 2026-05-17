@@ -39,8 +39,7 @@ function buildDefaults(initial?: MaterielWithRelations): MaterielFormFields {
     commentaire: initial?.commentaire ?? '',
     piece_id: initial?.piece_id ?? '',
     personne_id: initial?.personne_id ?? null,
-    date_pret: initial?.date_pret ?? '',
-    date_retour_prevue: initial?.date_retour_prevue ?? '',
+    date_retour_prevue: '',
     fauteuil: {
       prestataire: initial?.fauteuil?.prestataire ?? '',
       appartenance: initial?.fauteuil?.appartenance ?? '',
@@ -97,7 +96,7 @@ export function MaterielForm({ maisons, personnes, initial, mode }: Props) {
         className="border-border/60 bg-card/60 overflow-hidden rounded-3xl border shadow-[0_30px_60px_-40px_rgba(0,0,0,0.25)]"
       >
         <IdentificationFormSection />
-        <AffectationFormSection maisons={maisons} personnes={personnes} />
+        {mode === 'create' && <AffectationFormSection maisons={maisons} personnes={personnes} />}
 
         {isFauteuil && (
           <>
