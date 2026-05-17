@@ -12,9 +12,9 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const materiel = await getMaterielById(id)
-  if (!materiel) return { title: 'Matériel introuvable — Ergo Les Charmes' }
+  if (!materiel) return { title: 'Matériel introuvable ' }
   const label = `${MATERIEL_TYPE_LABELS[materiel.type]} · ${materiel.modele}`
-  return { title: `${label} — Ergo Les Charmes` }
+  return { title: `${label} ` }
 }
 
 export default async function MaterielDetailPage({ params }: Props) {

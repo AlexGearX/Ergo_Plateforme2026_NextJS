@@ -3,7 +3,7 @@ import { getAllMaisonsWithPieces } from '@/features/maisons/queries'
 import { listPersonnesForSelect } from '@/features/personnes/queries'
 import { MaterielNewClient } from '@/app/materiels/nouveau/materiel-new-client'
 
-export const metadata: Metadata = { title: 'Nouveau matériel — Ergo Les Charmes' }
+export const metadata: Metadata = { title: 'Nouveau matériel ' }
 
 export default async function MaterielNewPage() {
   const [maisons, personnes] = await Promise.all([getAllMaisonsWithPieces(), listPersonnesForSelect()])

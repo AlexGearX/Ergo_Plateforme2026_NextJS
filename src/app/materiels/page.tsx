@@ -4,7 +4,7 @@ import { getAllMaisonsWithPieces } from '@/features/maisons/queries'
 import { MATERIEL_TYPES, type MaterielType } from '@/features/materiels/constants'
 import { MaterielsClient } from '@/app/materiels/materiels-client'
 
-export const metadata: Metadata = { title: 'Matériels — Ergo Les Charmes' }
+export const metadata: Metadata = { title: 'Matériels ' }
 
 type Props = {
   searchParams: Promise<{ type?: string; maison?: string }>

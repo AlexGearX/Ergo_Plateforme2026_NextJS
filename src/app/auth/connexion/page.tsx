@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { SignInClient } from '@/app/auth/connexion/sign-in-client'
 
 export const metadata: Metadata = {
-  title: 'Connexion — Ergo Les Charmes',
+  title: 'Connexion ',
 }
 
 export default function SignInPage() {

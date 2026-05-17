@@ -10,8 +10,8 @@ type Props = { params: Promise<{ slug: string; id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const piece = await getPieceById(id)
-  if (!piece) return { title: 'Pièce introuvable — Ergo Les Charmes' }
-  return { title: `${piece.nom} — Ergo Les Charmes` }
+  if (!piece) return { title: 'Pièce introuvable ' }
+  return { title: `${piece.nom} ` }
 }
 
 export default async function PieceDetailPage({ params }: Props) {

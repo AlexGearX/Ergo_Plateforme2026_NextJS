@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Ergo Les Charmes"
+    "name": "Ergo"
   },
   "nav": {
     "home": "Accueil",
@@ -12,7 +12,16 @@
     "signOut": "Déconnexion",
     "email": "Adresse e-mail",
     "sendMagicLink": "Recevoir un lien de connexion",
-    "checkEmail": "Vérifie ta boîte mail pour finaliser la connexion."
+    "checkEmail": "Vérifie ta boîte mail pour finaliser la connexion.",
+    "welcomeKicker": "",
+    "welcomeTitle": "Bonjour.",
+    "welcomeSubtitle": "Glissez votre adresse e-mail — un lien de connexion arrive dans votre boîte.",
+    "sending": "Envoi en cours…",
+    "sentHeading": "Lien envoyé",
+    "sentBody": "Ouvrez le mail envoyé à",
+    "resend": "Renvoyer un lien",
+    "fineprint": "Sans mot de passe · lien à usage unique · expire dans 5 minutes",
+    "badge": "Ergothérapie - Puy-de-Dôme"
   },
   "actions": {
     "submit": "Valider",

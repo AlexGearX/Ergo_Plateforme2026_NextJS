@@ -10,8 +10,8 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const personne = await getPersonneWithLocationById(id)
-  if (!personne) return { title: 'Personne introuvable — Ergo Les Charmes' }
-  return { title: `${personne.prenom} ${personne.nom} — Ergo Les Charmes` }
+  if (!personne) return { title: 'Personne introuvable ' }
+  return { title: `${personne.prenom} ${personne.nom} ` }
 }
 
 export default async function PersonneDetailPage({ params }: Props) {

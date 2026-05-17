@@ -8,8 +8,8 @@ type Props = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const maison = await getMaisonBySlug(slug)
-  if (!maison) return { title: 'Maison introuvable — Ergo Les Charmes' }
-  return { title: `${maison.nom} — Ergo Les Charmes` }
+  if (!maison) return { title: 'Maison introuvable ' }
+  return { title: `${maison.nom} ` }
 }
 
 export default async function MaisonDetailPage({ params }: Props) {
