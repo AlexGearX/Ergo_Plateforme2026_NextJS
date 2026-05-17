@@ -3,8 +3,8 @@ import type { Piece, PieceType, PiecesByType } from '@/features/maisons/types'
 
 const PIECE_TYPE_ORDER: PieceType[] = ['chambre', 'salle_de_bain', 'salle_de_vie', 'cuisine', 'autre']
 
-export function groupPiecesByType(pieces: Piece[]): PiecesByType[] {
-  const byType = new Map<PieceType, Piece[]>()
+export function groupPiecesByType<P extends Piece>(pieces: P[]): PiecesByType<P>[] {
+  const byType = new Map<PieceType, P[]>()
   for (const p of pieces) {
     const existing = byType.get(p.type)
     if (existing) existing.push(p)

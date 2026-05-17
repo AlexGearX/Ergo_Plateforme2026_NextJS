@@ -52,7 +52,13 @@ export function MaisonDetailClient({ maison }: Props) {
 
           <section className="mt-16 space-y-12">
             {groups.map(group => (
-              <PieceGroup key={group.type} type={group.type} pieces={group.pieces} isStockage={isStockage} />
+              <PieceGroup
+                key={group.type}
+                type={group.type}
+                pieces={group.pieces}
+                isStockage={isStockage}
+                maisonSlug={maison.slug}
+              />
             ))}
           </section>
         </main>

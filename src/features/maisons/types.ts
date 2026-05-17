@@ -9,11 +9,22 @@ export type MaisonWithPiecesCount = Maison & {
   piecesCount: number
 }
 
-export type MaisonWithPieces = Maison & {
-  pieces: Piece[]
+export type PieceOccupantSummary = {
+  id: string
+  nom: string
+  prenom: string
+  type: Database['public']['Enums']['personne_type']
 }
 
-export type PiecesByType = {
+export type PieceWithOccupants = Piece & {
+  occupants: PieceOccupantSummary[]
+}
+
+export type MaisonWithPieces = Maison & {
+  pieces: PieceWithOccupants[]
+}
+
+export type PiecesByType<P extends Piece = Piece> = {
   type: PieceType
-  pieces: Piece[]
+  pieces: P[]
 }

@@ -1,0 +1,22 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { listMateriels } from '@/features/materiels/queries'
+import { getPieceById } from '@/features/pieces/queries'
+import { PieceDetailClient } from '@/app/maisons/[slug]/pieces/[id]/piece-detail-client'
+
+type Props = { params: Promise<{ slug: string; id: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const piece = await getPieceById(id)
+  if (!piece) return { title: 'Pièce introuvable — Ergo Les Charmes' }
+  return { title: `${piece.nom} — Ergo Les Charmes` }
+}
+
+export default async function PieceDetailPage({ params }: Props) {
+  const { slug, id } = await params
+  const [piece, materiels] = await Promise.all([getPieceById(id), listMateriels({ piece_id: id })])
+  if (!piece) notFound()
+  if (piece.maison?.slug !== slug) notFound()
+  return <PieceDetailClient piece={piece} materiels={materiels} />
+}

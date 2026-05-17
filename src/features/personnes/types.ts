@@ -5,7 +5,12 @@ export type PersonneInsert = Database['public']['Tables']['personnes']['Insert']
 export type PersonneUpdate = Database['public']['Tables']['personnes']['Update']
 
 export type PersonneWithPiece = Personne & {
-  piece: { id: string; nom: string; maison_id: string } | null
+  piece: {
+    id: string
+    nom: string
+    maison_id: string
+    maison: { id: string; nom: string; numero: number; slug: string } | null
+  } | null
 }
 
 export type PersonneWithLocation = Personne & {

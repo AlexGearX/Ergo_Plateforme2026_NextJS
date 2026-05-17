@@ -64,6 +64,28 @@
       "stockageZone": "Zone nº"
     }
   },
+  "pieces": {
+    "notFound": "Pièce introuvable.",
+    "backToMaison": "Retour à la maison",
+    "detail": {
+      "intro": "Le détail d’une pièce : sa maison, son occupant et le matériel suivi.",
+      "position": "Position",
+      "type": "Type",
+      "maison": "Maison",
+      "occupant": {
+        "section": "Occupant",
+        "introInterne": "Personne interne rattachée à cette chambre.",
+        "empty": "Aucune personne attribuée à cette chambre."
+      },
+      "materiel": {
+        "section": "Matériel suivi",
+        "introOne": "1 matériel suivi dans cette pièce.",
+        "introMany": "{count} matériels suivis dans cette pièce.",
+        "empty": "Aucun matériel attribué à cette pièce.",
+        "shared": "Partagé"
+      }
+    }
+  },
   "personnes": {
     "title": "Personnes",
     "new": "Nouvelle personne",

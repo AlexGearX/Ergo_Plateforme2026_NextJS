@@ -43,7 +43,9 @@ export async function getMaisonBySlug(slug: string): Promise<MaisonWithPieces | 
 
   const { data, error } = await supabase
     .from('maisons')
-    .select('id, numero, nom, slug, position, type, created_at, updated_at, pieces(*)')
+    .select(
+      'id, numero, nom, slug, position, type, created_at, updated_at, pieces(*, occupants:personnes(id, nom, prenom, type))',
+    )
     .eq('slug', slug)
     .maybeSingle()
 
@@ -54,7 +56,7 @@ export async function getMaisonBySlug(slug: string): Promise<MaisonWithPieces | 
   if (!data) return null
 
   const { pieces, ...maison } = data
-  return { ...maison, pieces: pieces ?? [] }
+  return { ...maison, pieces: (pieces ?? []) as MaisonWithPieces['pieces'] }
 }
 
 export async function getAllMaisonsWithPieces(): Promise<MaisonWithSimplePieces[]> {
