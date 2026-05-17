@@ -32,3 +32,17 @@ export type MouvementWithMateriel = MaterielMouvement & {
   piece_apres: PieceSnapshot
   personne_apres: PersonneSnapshot
 }
+
+export type ActivePret = {
+  id: string
+  materiel_id: string
+  date_retour_prevue: string
+  materiel: {
+    id: string
+    nom: string | null
+    modele: string
+    type: Database['public']['Enums']['materiel_type']
+  }
+  piece: PieceSnapshot
+  personne: PersonneSnapshot
+}

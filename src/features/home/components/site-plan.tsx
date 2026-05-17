@@ -13,14 +13,15 @@ import {
 } from '@/features/home/data/site-plan'
 import { FlowerDot, TreeShape } from '@/features/home/svg/site-decor'
 import { AnimalSprite } from '@/features/home/svg/animals'
-import { HouseMarker, StockageMarker } from '@/features/home/components/markers'
+import { HouseMarker, StockageMarker, type MaisonAlerts } from '@/features/home/components/markers'
 
 type Props = {
   markers: MaisonMarker[]
   stockage: MaisonWithPiecesCount | null
+  alertsByMaisonId?: Map<string, MaisonAlerts>
 }
 
-export function SitePlan({ markers, stockage }: Props) {
+export function SitePlan({ markers, stockage, alertsByMaisonId }: Props) {
   const planRef = useSitePlanAnimation()
 
   return (
@@ -111,7 +112,7 @@ export function SitePlan({ markers, stockage }: Props) {
 
         <div className="absolute inset-0">
           {markers.map(m => (
-            <HouseMarker key={m.id} maison={m} />
+            <HouseMarker key={m.id} maison={m} alerts={alertsByMaisonId?.get(m.id)} />
           ))}
           {stockage && <StockageMarker maison={stockage} />}
         </div>
